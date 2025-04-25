@@ -30,6 +30,23 @@
 
     nixfmt = prev.nixfmt-rfc-style;
 
+    sketchybar-app-font = prev.stdenv.mkDerivation {
+      name = "sketchybar-app-font";
+      src = inputs.sketchybar-app-font;
+      buildInputs = [
+        final.nodejs
+        final.nodePackages.svgtofont
+      ];
+      buildPhase = ''
+        ln -s ${final.nodePackages.svgtofont}/lib/node_modules ./node_modules
+        node ./build.js
+      '';
+      installPhase = ''
+        mkdir -p $out/share/fonts
+        cp -r dist/*.ttf $out/share/fonts
+      '';
+    };
+
     fishPlugins = prev.fishPlugins // {
       nix-env = {
         name = "nix-env";

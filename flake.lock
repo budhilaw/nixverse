@@ -470,6 +470,7 @@
         "pre-commit-hooks": "pre-commit-hooks",
         "process-compose-flake": "process-compose-flake",
         "services-flake": "services-flake",
+        "sketchybar-app-font": "sketchybar-app-font",
         "sops-nix": "sops-nix"
       }
     },
@@ -485,6 +486,22 @@
       "original": {
         "owner": "juspay",
         "repo": "services-flake",
+        "type": "github"
+      }
+    },
+    "sketchybar-app-font": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1742372398,
+        "narHash": "sha256-V0VXYJUfi6n9U5RyHfEPi3bNQDyiu+LyKjYXHgYiFgo=",
+        "owner": "kvndrsslr",
+        "repo": "sketchybar-app-font",
+        "rev": "e54a3a70da29f0ad1a5f711728ed5100210a3f4c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kvndrsslr",
+        "repo": "sketchybar-app-font",
         "type": "github"
       }
     },
