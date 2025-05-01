@@ -10,9 +10,9 @@ let
   throwSystem = throw "Unsupported system: ${system}";
 
   pname = "mendeley-reference-manager";
-  version = "2.132.1";
+  version = "2.132.2";
   
-  sha256 = "sha256-2Fz0HXIH9i/fFURvCZpgYg0CmtBGl4TrTEZc0C9OFqM="; # 683dc8a17a83fb0e1dc51783ef6c7651604ea35714e6a361ed12793e6547048d
+  sha256 = "sha256-/rR9AJcw5wAX8UuNyX700TUOTZ87jCe7MVWmf4y00x0="; # 683dc8a17a83fb0e1dc51783ef6c7651604ea35714e6a361ed12793e6547048d
 
   src = fetchurl {
     url = "https://static.mendeley.com/bin/desktop/mendeley-reference-manager-${version}-universal.dmg";

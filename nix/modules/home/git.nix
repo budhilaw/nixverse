@@ -62,8 +62,6 @@ in
       name = ${budhilaw.name}
       email = ${budhilaw.email}
       signingKey = ${budhilaw.signingKey}
-    [core]
-      sshCommand = "ssh -i ~/.ssh/id_ed25519_personal"
   '';
 
   # Config for paper/work account
@@ -72,25 +70,39 @@ in
       name = ${ericharsya.name}
       email = ${ericharsya.email}
       signingKey = ${ericharsya.signingKey}
-    [core]
-      sshCommand = "ssh -i ~/.ssh/id_ed25519_paper"
   '';
 
   # SSH config for multiple GitHub accounts
   home.file.".ssh/config".text = ''
-    # Default GitHub (Personal)
+    # Default GitHub config
     Host github.com
+      HostName github.com
+      User git
+      # Automatically detect which key to use
+      IdentityFile ~/.ssh/id_ed25519_personal
+      IdentityFile ~/.ssh/id_ed25519_paper
+      
+    # Explicit config for personal projects
+    Host github.com-personal
       HostName github.com
       User git
       IdentityFile ~/.ssh/id_ed25519_personal
       IdentitiesOnly yes
       
-    # Paper/Work GitHub
-    Host github-paper
+    # Explicit config for paper projects  
+    Host github.com-paper
       HostName github.com
       User git
       IdentityFile ~/.ssh/id_ed25519_paper
       IdentitiesOnly yes
+      
+    # GitHub pattern matching for Paper organization repos
+    Host github.com
+      HostName github.com
+      User git
+      IdentityFile ~/.ssh/id_ed25519_paper
+      IdentitiesOnly yes
+      Match host github.com exec "echo %h | grep -q 'paper-indonesia'"
   '';
 
   ### git tools

@@ -40,7 +40,9 @@ in
     "1password-cli"
     "pritunl"
     "logi-options+"
+    "jetbrains-toolbox"
 
+    "discord"
     "mist"
     "moonlight"
     "mounty"

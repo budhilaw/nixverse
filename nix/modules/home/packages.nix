@@ -56,7 +56,6 @@
       (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
       postman
       cursor
-      jetbrains-toolbox
 
       ################################## 
       # Programming Stuff
@@ -78,11 +77,11 @@
       obs-studio
       brave-browser
       android-file-transfer
+      android-tools
 
       ##################################
       # Communication
       ##################################
-      discord
       zoom-us
       telegram
 
