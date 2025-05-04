@@ -36,18 +36,31 @@ in
   };
 
   homebrew.casks = [
+    # browsers
+    "brave-browser"
+
+    # password managers
     "1password"
     "1password-cli"
-    "pritunl"
+    
+    # productivity
     "logi-options+"
-    "jetbrains-toolbox"
 
+    # chat
     "discord"
-    "mist"
+
+    # media
     "moonlight"
     "mounty"
+
+    # vpn
     "cloudflare-warp"
+
+    # communication
     "slack"
+
+    # code
+    "cursor"
   ];
 
 }

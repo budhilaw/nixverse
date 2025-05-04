@@ -55,7 +55,6 @@
       kubectl
       (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
       postman
-      cursor
 
       ################################## 
       # Programming Stuff
@@ -75,7 +74,6 @@
       ffmpeg
       obsidian
       obs-studio
-      brave-browser
       android-file-transfer
       android-tools
 
