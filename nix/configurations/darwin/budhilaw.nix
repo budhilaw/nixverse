@@ -54,13 +54,14 @@
     persistent-apps = [
       # System apps 
       { app = "/System/Applications/Launchpad.app"; }
-      { app = "/System/Applications/Brave Browser.app"; }
+      { app = "/Applications/Brave Browser.app"; }
+      { app = "/System/Applications/Calendar.app"; }
       { app = "/System/Applications/Messages.app"; }
       { app = "/System/Applications/Mail.app"; }
       { app = "/System/Applications/Music.app"; }
       { app = "${pkgs.obsidian}/Applications/Obsidian.app"; }
       { app = "${pkgs.iterm2}/Applications/iTerm.app"; }
-      { app = "/System/Applications/Cursor.app"; }
+      { app = "/Applications/Cursor.app"; }
       { app = "/System/Applications/System Settings.app"; }
       { app = "/System/Applications/App Store.app"; }
     ];
