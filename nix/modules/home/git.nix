@@ -74,6 +74,9 @@ in
 
   # SSH config for multiple GitHub accounts
   home.file.".ssh/config".text = ''
+    Host *
+        UseKeychain yes
+
     Host github.com
       HostName github.com
       User git
