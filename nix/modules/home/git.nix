@@ -41,6 +41,11 @@ in
         "git@github.com:" = {
           insteadOf = "https://github.com/";
         };
+        
+        # Specific rule for Paper organization repositories
+        "git@github.com-paper:paper-indonesia/" = {
+          insteadOf = "https://github.com/paper-indonesia/";
+        };
       };
       init.defaultBranch = "main";
       

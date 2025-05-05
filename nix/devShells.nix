@@ -82,7 +82,16 @@
             in
             pkgs.mkShell {
               description = "${name} Development Environment";
-              buildInputs = [ go ];
+              buildInputs = with pkgs; [
+                go
+                gopls
+                go-outline
+                gocode-gomod
+                godef
+                golint
+                delve
+                go-tools
+              ];
               shellHook = ''
                 export GOPATH="$(${go}/bin/go env GOPATH)"
                 export PATH="$PATH:$GOPATH/bin"
