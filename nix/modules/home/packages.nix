@@ -117,7 +117,6 @@
       ##################################
       xcode-install
       dbeaver-community
-      orbstack
 
       ##################################
       # Study / Research
