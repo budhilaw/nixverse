@@ -9,20 +9,13 @@ let
 
   ericharsya = {
     name = "Ericsson Budhilaw";
-    email = "ericsson.budhilaw@harsya.com";
-    signingKey = "0x936C2C581A15BB64";
+    email = "ericsson.budhilaw@paper.id";
+    signingKey = "0x3AFAE7E10542D24E";
   };
 in
 {
   programs.git = {
     enable = true;
-    userName = budhilaw.name;
-    userEmail = budhilaw.email;
-    signing = {
-      key = budhilaw.signingKey;
-      signByDefault = true;
-    };
-
     ignores = [
       ".DS_Store"
     ];
@@ -51,6 +44,9 @@ in
       
       # Multiple GitHub accounts configuration
       includeIf = {
+        "gitdir:~/.config/nixverse/" = {
+          path = "~/.gitconfig-personal";
+        };
         "gitdir:~/Dev/Personal/" = {
           path = "~/.gitconfig-personal";
         };
