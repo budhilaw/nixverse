@@ -41,7 +41,7 @@
 
   services = {
     dnscrypt-proxy.enable = true;
-    dnscrypt-proxy.settings.listen_addresses = [ "127.0.0.1:5353" ];
+    dnscrypt-proxy.settings.listen_addresses = [ "127.0.0.1:5355" ];
   };
 
   # --- dock configuration

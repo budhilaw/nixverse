@@ -1,7 +1,7 @@
 {
   services.dnscrypt-proxy = {
     settings = {
-      listen_addresses = [ "127.0.0.1:5353" ];
+      listen_addresses = [ "127.0.0.1:5355" ];
       doh_servers = true;
       dnscrypt_servers = true;
       server_names = [

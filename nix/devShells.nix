@@ -137,88 +137,6 @@
 
           #
           #
-          #    $ nix develop github:r17x/nixpkgs#ocaml
-          #
-          #
-          ocaml = pkgs.mkShell {
-            description = "OCaml development environment";
-            buildInputs = with pkgs.ocamlPackages; [
-              dune
-              ocaml
-              opam
-              merlin
-            ];
-          };
-
-          #
-          #
-          #    $ nix develop github:r17x/nixpkgs#ocamlorg
-          #
-          #
-          ocamlorg =
-            let
-              ocamlPackages = pkgs.ocaml-ng.ocamlPackages_4_14;
-            in
-            pkgs.mkShell {
-              description = "OCaml.org development environment";
-              buildInputs = with ocamlPackages; [
-                ocaml
-                merlin
-              ];
-              nativeBuildInputs = with pkgs; [
-                opam
-                pkg-config
-                libev
-                oniguruma
-                openssl
-                gmp
-              ];
-            };
-
-          #
-          #
-          #    $ nix develop github:r17x/nixpkgs#melange
-          #
-          #
-          melange = pkgs.mkShell {
-            description = "Melange Development Environment with OCaml 5_2";
-            shellHook = config.pre-commit.installationScript;
-            nativeBuildInputs = with pkgs.ocamlPackages; [
-              ocaml
-              dune_3
-              findlib
-              ocaml-lsp
-              ocamlformat
-              reason
-              merlin
-              melange
-            ];
-            buildInputs = with pkgs.ocamlPackages; [
-              angstrom
-              dream
-              melange
-              melange-webapi
-              reason-react
-              reason-react-ppx
-              server-reason-react
-              atdgen
-              atdgen-runtime
-              yojson
-              lwt
-              lwt_ppx
-              cohttp
-              cohttp-lwt-unix
-              # TODO: styled-ppx fix build
-              # styled-ppx
-              pkgs.nodejs_20
-              (pkgs.nodeCorepackShims.overrideAttrs (_: {
-                buildInputs = [ pkgs.nodejs_20 ];
-              }))
-            ];
-          };
-
-          #
-          #
           #    $ nix develop github:r17x/nixpkgs#go
           #
           #
@@ -251,10 +169,6 @@
               pkg-config
             ];
           };
-
-          rust-opencv = rust-wasm.overrideAttrs (old: {
-            nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ pkgs.opencv4 ];
-          });
 
           rust-cap = pkgs.mkShell {
             description = "Rust  Development Environment";
