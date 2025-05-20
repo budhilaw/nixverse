@@ -74,11 +74,14 @@ in
   '';
 
   # SSH config for multiple GitHub accounts
-  home.file.".ssh/config".text = ''
-    Host *
-        UseKeychain yes
+  home.file.".ssh/config".text = let
+    useKeychainConfig = if pkgs.stdenv.isDarwin then ''
+      Host *
+          UseKeychain yes
 
-    Host github.com
+    '' else "";
+  in ''
+    ${useKeychainConfig}Host github.com
       HostName github.com
       User git
       IdentityFile ~/.ssh/id_ed25519_personal

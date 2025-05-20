@@ -46,6 +46,7 @@
       eza
       fastfetch
       git
+      pinentry-curses
 
       ################################## 
       # Development
@@ -54,7 +55,6 @@
       sops
       kubectl
       (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
-      postman
 
       ################################## 
       # Programming Stuff
@@ -68,20 +68,10 @@
       ##################################
       starship # theme for shell (bash,fish,zsh)
       tmux
-      iterm2
       gnupg
       openssl
       ffmpeg
-      obsidian
-      obs-studio
-      android-file-transfer
       android-tools
-
-      ##################################
-      # Communication
-      ##################################
-      zoom-us
-      telegram
 
       ##################################
       # Useful Nix related tools
@@ -106,6 +96,10 @@
       shottr
       pinentry_mac
       raycast
+      obsidian
+      obs-studio
+      iterm2
+      android-file-transfer
 
       ##################################
       # Cleanup
@@ -117,10 +111,17 @@
       ##################################
       xcode-install
       dbeaver-community
+      postman
 
       ##################################
       # Study / Research
       ##################################
       mendeley-reference-manager
+
+      ##################################
+      # Communication
+      ##################################
+      zoom-us
+      telegram
     ];
 }

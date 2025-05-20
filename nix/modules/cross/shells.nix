@@ -9,18 +9,18 @@
       SHELL = "${fish}/bin/fish";
       CC = "${gcc}/bin/gcc";
     };
+
+    # Add babelfish to system packages
+    systemPackages = [ pkgs.babelfish ];
   };
 
   # Make Fish the default shell
   programs = {
     fish.enable = true;
-    fish.useBabelfish = true;
-    fish.babelfishPackage = pkgs.babelfish;
-    # Needed to address bug where $PATH is not properly set for fish:
-    # https://github.com/LnL7/nix-darwin/issues/122
+    # Needed to address bug where $PATH is not properly set for fish
     fish.shellInit = # fish
       ''
-        for p in (string split : ${config.environment.systemPath})
+        for p in (string split : $PATH)
           if not contains $p $fish_user_paths
             set -g fish_user_paths $fish_user_paths $p
           end

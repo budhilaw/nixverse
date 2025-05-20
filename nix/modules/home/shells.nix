@@ -2,10 +2,12 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
 let
+  inherit (lib) mkIf;
   nixConfigDirectory = "~/.config/nixpkgs";
   # usefull when want to write bin bash
   # n = pkgs.writers.writeBash "n" ''
@@ -219,7 +221,7 @@ in
       # See:
       # https://github.com/NixOS/nixpkgs/tree/90e20fc4559d57d33c302a6a1dce545b5b2a2a22/pkgs/shells/fish/plugins
       # for list available plugins built-in nixpkgs
-      plugins = with pkgs.fishPlugins; [ nix-env ];
+      plugins = [ ];
 
       functions = {
         ghds = ''
@@ -232,6 +234,26 @@ in
         rpkgjson = ''
           ${pkgs.nodejs}/bin/node -e "console.log(Object.entries(require('./package.json').$argv[1]).map(([k,v]) => k.concat(\"@\").concat(v)).join(\"\n\") )"
         '';
+        # Function to launch Cursor from WSL
+        cursor = ''
+          set -l cursor_bin "/mnt/c/Users/Ericsson Budhilaw/AppData/Local/Programs/cursor/resources/app/bin/cursor"
+          
+          if test -f "$cursor_bin"
+            # If path argument is provided, use it; otherwise use current path
+            set -l target_path
+            if test (count $argv) -gt 0
+              # Convert the provided path to absolute path
+              set target_path (realpath $argv[1])
+            else
+              set target_path (pwd)
+            end
+            
+            # Execute cursor binary with target path
+            "$cursor_bin" "$target_path"
+          else
+            echo "Cursor binary not found in the expected location: $cursor_bin"
+          end
+        '';
       };
 
       interactiveShellInit = ''
@@ -243,7 +265,7 @@ in
         set -U fish_color_error EC7279 --bold
         set -U fish_color_param 6CB6EB
         set fish_greeting
-      '';
+      ''; 
     };
 
     # Shell prompt and style
