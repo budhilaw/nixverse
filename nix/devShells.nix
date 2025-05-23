@@ -122,7 +122,7 @@
         #
         #    versions: 14, 18, 20, 22, Latest
         #
-        #    $ nix develop github:r17x/nixpkgs#<nodejsVERSION>
+        #    $ nix develop github:budhilaw/nixverse#<nodejsVERSION>
         #
         #
         mkShells "nodejs_"
@@ -137,7 +137,7 @@
 
           #
           #
-          #    $ nix develop github:r17x/nixpkgs#go
+          #    $ nix develop github:budhilaw/nixverse#go
           #
           #
           go = pkgs.mkShell {
@@ -151,7 +151,7 @@
 
           #
           #
-          #    $ nix develop github:r17x/nixpkgs#rust-wasm
+          #    $ nix develop github:budhilaw/nixverse#rust-wasm
           #
           #
           rust-wasm = pkgs.mkShell {
@@ -214,7 +214,41 @@
 
           #
           #
-          #    $ nix develop github:r17x/nixpkgs#bun
+          #    $ nix develop github:budhilaw/nixverse#python
+          #
+          #
+          python = pkgs.mkShell {
+            description = "Python Development Environment";
+            nativeBuildInputs = with pkgs; [
+              python3
+              python3Packages.pip
+              python3Packages.virtualenv
+              python3Packages.setuptools
+              python3Packages.wheel
+              python3Packages.black
+              python3Packages.flake8
+              python3Packages.mypy
+              python3Packages.pytest
+              python3Packages.ipython
+            ];
+            shellHook = ''
+              echo "Python Development Environment"
+              echo "Python version: $(python --version)"
+              echo "Available tools: pip, virtualenv, black, flake8, mypy, pytest, ipython"
+              
+              # Create and activate virtual environment if it doesn't exist
+              if [ ! -d ".venv" ]; then
+                echo "Creating virtual environment..."
+                python -m venv .venv
+              fi
+              
+              echo "To activate virtual environment: source .venv/bin/activate"
+            '';
+          };
+
+          #
+          #
+          #    $ nix develop github:budhilaw/nixverse#bun
           #
           #
           bun = pkgs.mkShell { buildInputs = [ pkgs.bun ]; };
