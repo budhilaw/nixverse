@@ -102,6 +102,7 @@
       brave-browser
       notion
       obsidian
+      siyuan
 
       ##################################
       # Cleanup
