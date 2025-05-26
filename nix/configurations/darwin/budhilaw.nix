@@ -62,7 +62,7 @@
       { app = "/System/Applications/Messages.app"; }
       { app = "/System/Applications/Mail.app"; }
       { app = "/System/Applications/Music.app"; }
-      { app = "${pkgs.obsidian}/Applications/Obsidian.app"; }
+      { app = "${pkgs.notion}/Applications/Notion.app"; }
       { app = "${pkgs.iterm2}/Applications/iTerm.app"; }
       { app = "/Applications/Cursor.app"; }
       { app = "/System/Applications/System Settings.app"; }

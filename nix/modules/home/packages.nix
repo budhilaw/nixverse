@@ -96,12 +96,12 @@
       shottr
       pinentry_mac
       raycast
-      obsidian
       obs-studio
       iterm2
       android-file-transfer
       brave-browser
       notion
+      obsidian
 
       ##################################
       # Cleanup

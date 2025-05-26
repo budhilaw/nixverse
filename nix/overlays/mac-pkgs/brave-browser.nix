@@ -13,7 +13,7 @@ let
 
   version =
     rec {
-      aarch64-darwin = "1.78.94.0";
+      aarch64-darwin = "1.78.102.0";
       x86_64-darwin = aarch64-darwin;
     }
     .${system} or throwSystem;
