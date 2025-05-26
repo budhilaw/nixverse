@@ -16,13 +16,8 @@ in
         eval "$(${config.homebrew.brewPrefix}/brew shellenv)"
       '';
 
-  system.activationScripts.preUserActivation.text =
-    mkIf brewEnabled # bash
-      ''
-        if [ ! -f ${config.homebrew.brewPrefix}/brew ]; then
-          ${pkgs.bash}/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        fi
-      '';
+  # Note: Homebrew installation is now handled automatically by nix-darwin
+  # The preUserActivation script has been removed as it's deprecated
 
   homebrew.enable = true;
   homebrew.brews = [ ];
@@ -36,9 +31,6 @@ in
   };
 
   homebrew.casks = [
-    # browsers
-    "brave-browser"
-
     # password managers
     "1password"
     "1password-cli"

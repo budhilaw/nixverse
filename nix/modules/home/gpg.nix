@@ -30,7 +30,7 @@ in
       enableSshSupport = true;
       defaultCacheTtl = 34560000;
       maxCacheTtl = 34560000;
-      pinentryPackage = if pkgs.stdenv.isDarwin 
+      pinentry.package = if pkgs.stdenv.isDarwin 
         then pkgs.pinentry_mac
         else pkgs.pinentry-curses;
       extraConfig = ''

@@ -13,6 +13,9 @@
   system.stateVersion = 4;
   nixpkgs.hostPlatform = "aarch64-darwin";
 
+  # Set primary user for nix-darwin options that require it
+  system.primaryUser = "budhilaw";
+
   users.users.budhilaw = {
     home = "/Users/budhilaw";
     shell = pkgs.fish;
@@ -54,7 +57,7 @@
     persistent-apps = [
       # System apps 
       { app = "/System/Applications/Launchpad.app"; }
-      { app = "/Applications/Brave Browser.app"; }
+      { app = "${pkgs.brave-browser}/Applications/Brave Browser.app"; }
       { app = "/System/Applications/Calendar.app"; }
       { app = "/System/Applications/Messages.app"; }
       { app = "/System/Applications/Mail.app"; }

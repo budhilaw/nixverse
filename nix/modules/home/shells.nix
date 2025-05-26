@@ -234,7 +234,8 @@ in
         rpkgjson = ''
           ${pkgs.nodejs}/bin/node -e "console.log(Object.entries(require('./package.json').$argv[1]).map(([k,v]) => k.concat(\"@\").concat(v)).join(\"\n\") )"
         '';
-        # Function to launch Cursor from WSL
+      } // lib.optionalAttrs pkgs.stdenv.isLinux {
+        # Function to launch Cursor from WSL (Linux/NixOS only)
         cursor = ''
           set -l cursor_bin "/mnt/c/Users/Ericsson Budhilaw/AppData/Local/Programs/cursor/resources/app/bin/cursor"
           

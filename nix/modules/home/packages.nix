@@ -100,6 +100,8 @@
       obs-studio
       iterm2
       android-file-transfer
+      brave-browser
+      notion
 
       ##################################
       # Cleanup

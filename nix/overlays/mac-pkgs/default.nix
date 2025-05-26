@@ -18,6 +18,7 @@
         "slack"
         "iterm2"
         "mendeley-reference-manager"
+        "notion"
       ];
     in
 
