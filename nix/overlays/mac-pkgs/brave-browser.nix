@@ -13,40 +13,32 @@ let
 
   version =
     rec {
-      aarch64-darwin = "1.78.102.0";
+      aarch64-darwin = "1.78.102";
       x86_64-darwin = aarch64-darwin;
     }
     .${system} or throwSystem;
 
   sha256 =
     rec {
-      aarch64-darwin = "sha256-R9erRIBvQ6xhWMWg+UlHOvcJVua9m16G1w7q310Ydy0=";
+      aarch64-darwin = "sha256-JCyZ80tCts3DCFWJlERTmden04E3wStHEM5jcAnK1Go=";
       x86_64-darwin = "sha256-5sMJMN6rYLN1TFaaSbq3mCzr8C4/LrOWz6HMpTRlMSA=";
     }
     .${system} or throwSystem;
 
   srcs =
     let
-      versionFormatted = with builtins; 
-        let 
-          parts = lib.strings.splitString "." version;
-          major = elemAt parts 0;
-          minor = elemAt parts 1;
-          patch = elemAt parts 2;
-        in
-          "${major}${minor}.${patch}";
-      
-      folder = if system == "aarch64-darwin" then "stable-arm64" else "stable";
+      # Remove the trailing .0 from version for GitHub releases
+      versionTag = "v${version}";
       arch = if system == "aarch64-darwin" then "arm64" else "x64";
-      base = "https://updates-cdn.bravesoftware.com/sparkle/Brave-Browser";
+      base = "https://github.com/brave/brave-browser/releases/download";
     in
     rec {
       aarch64-darwin = {
-        url = "${base}/stable-arm64/${versionFormatted}/Brave-Browser-arm64.dmg";
+        url = "${base}/${versionTag}/Brave-Browser-arm64.dmg";
         sha256 = sha256;
       };
       x86_64-darwin = {
-        url = "${base}/stable/${versionFormatted}/Brave-Browser-x64.dmg";
+        url = "${base}/${versionTag}/Brave-Browser-x64.dmg";
         sha256 = sha256;
       };
     };

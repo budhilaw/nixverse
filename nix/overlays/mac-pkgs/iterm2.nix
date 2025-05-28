@@ -14,7 +14,7 @@ let
 
   version =
     rec {
-      aarch64-darwin = "3.5.13";
+      aarch64-darwin = "3.5.14";
       x86_64-darwin = aarch64-darwin;
     }
     .${system} or throwSystem;
@@ -22,15 +22,19 @@ let
   # SHA hash for iTerm2 v3.5.13
   sha256 =
     rec {
-      aarch64-darwin = "sha256-h/j2ykGor1+p6ji96i5RiBMR5/rCQaLHnXYwvFCaN00=";
+      aarch64-darwin = "sha256-WFvRGeTPOl5r+m87av7PQW8C4o+NgaOh6UmFXaBYy90=";
       x86_64-darwin = aarch64-darwin;
     }
     .${system} or throwSystem;
 
   srcs =
+    let
+      # Convert version format from "3.5.14" to "3_5_14" for URL
+      versionFormatted = builtins.replaceStrings ["."] ["_"] version;
+    in
     rec {
       aarch64-darwin = {
-        url = "https://iterm2.com/downloads/stable/iTerm2-3_5_13.zip";
+        url = "https://iterm2.com/downloads/stable/iTerm2-${versionFormatted}.zip";
         inherit sha256;
       };
       x86_64-darwin = aarch64-darwin;

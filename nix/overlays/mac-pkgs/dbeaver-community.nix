@@ -2,12 +2,12 @@
 
 let
   pname = "dbeaver-community";
-  version = "25.0.4";
+  version = "25.0.5";
   
   sources = {
     aarch64-darwin = fetchurl {
       url = "https://dbeaver.io/files/${version}/dbeaver-ce-${version}-macos-aarch64.dmg";
-      sha256 = "sha256-a9H9M1j6iPcrVcfDxCZHeZj6e55QH3XochXaL2OStlI=";
+      sha256 = "sha256-L6bOyvhlsT4sXL1QDhlJtb8DFfDVw21ixyRenOVdCxU=";
     };
     x86_64-darwin = fetchurl {
       url = "https://dbeaver.io/files/${version}/dbeaver-ce-${version}-macos-x86_64.dmg";

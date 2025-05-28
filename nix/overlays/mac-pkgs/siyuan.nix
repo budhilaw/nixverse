@@ -2,7 +2,7 @@
   lib,
   stdenv,
   fetchurl,
-  undmg,
+  _7zz,
 }:
 
 let
@@ -20,7 +20,7 @@ let
 
   sha256 =
     rec {
-      aarch64-darwin = "sha256-DoxtrvHB5F7FitaVvmgEu1zrUlz8YPSBfxq/czmEUvw="; # 0e8c6adf1ce45ce58ad695be6f8064d5ceb5a52fcb60f4217fbafd73384b52fc
+      aarch64-darwin = "sha256-Doxq3xzkXOWK1pW+b4Bk1c61pS/LYPQhf7r9czhLUvw="; # 0e8c6adf1ce45ce58ad695be6f8064d5ceb5a52fcb60f4217fbafd73384b52fc
       x86_64-darwin = "sha256-xCVm178E6janlPsBCTMLos2f65gkgsKEgRHARP8cFFQ="; # c42566d7bf44ea36a7a8f4b09330e2a0bed9fe9b8242a284811e044f6c9c1544
     }
     .${system} or throwSystem;
@@ -63,7 +63,7 @@ let
       meta
       ;
 
-    nativeBuildInputs = [ undmg ];
+    nativeBuildInputs = [ _7zz ];
 
     sourceRoot = "SiYuan.app";
 
