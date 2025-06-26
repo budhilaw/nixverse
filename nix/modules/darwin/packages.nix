@@ -10,9 +10,9 @@
 
 {
   # Apps
-  environment.systemPackages = with pkgs.branches.master; [
+  environment.systemPackages = (with pkgs.branches.master; [
     terminal-notifier
-  ];
+  ]);
 
   # Fonts
   fonts.packages = with pkgs; [

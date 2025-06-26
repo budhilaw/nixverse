@@ -55,12 +55,6 @@
       sops
       kubectl
       (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
-
-      ################################## 
-      # Programming Stuff
-      ##################################
-      go-mockery
-      go-migrate
       docker
 
       ##################################
@@ -98,16 +92,10 @@
       raycast
       obs-studio
       iterm2
-      android-file-transfer
-      brave-browser
-      notion
-      obsidian
-      siyuan
-
-      ##################################
-      # Cleanup
-      ##################################
+      google-chrome
+      ntfs-3g
       appcleaner
+      stats
 
       ##################################
       # Developer Tools
@@ -115,6 +103,7 @@
       xcode-install
       dbeaver-community
       postman
+      cloudflared
 
       ##################################
       # Study / Research

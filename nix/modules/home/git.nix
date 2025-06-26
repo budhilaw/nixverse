@@ -73,15 +73,14 @@ in
       signingKey = ${ericharsya.signingKey}
   '';
 
-  # SSH config for multiple GitHub accounts
-  home.file.".ssh/config".text = let
-    useKeychainConfig = if pkgs.stdenv.isDarwin then ''
-      Host *
-          UseKeychain yes
+  # SSH config activation script to create file with proper permissions
+  home.activation.sshConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    $DRY_RUN_CMD mkdir -p ~/.ssh
+    $DRY_RUN_CMD cat > ~/.ssh/config << 'EOF'
+    Host *
+        UseKeychain yes
 
-    '' else "";
-  in ''
-    ${useKeychainConfig}Host github.com
+    Host github.com
       HostName github.com
       User git
       IdentityFile ~/.ssh/id_ed25519_personal
@@ -92,6 +91,8 @@ in
       User git
       IdentityFile ~/.ssh/id_ed25519_paper
       IdentitiesOnly yes
+    EOF
+    $DRY_RUN_CMD chmod 600 ~/.ssh/config
   '';
 
   ### git tools

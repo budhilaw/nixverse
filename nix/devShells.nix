@@ -91,6 +91,8 @@
                 golint
                 delve
                 go-tools
+                go-migrate
+                go-mockery
               ];
               shellHook = ''
                 export GOPATH="$(${go}/bin/go env GOPATH)"
@@ -151,65 +153,45 @@
 
           #
           #
-          #    $ nix develop github:budhilaw/nixverse#rust-wasm
+          #    $ nix develop github:budhilaw/nixverse#rust
           #
           #
-          rust-wasm = pkgs.mkShell {
+          rust= pkgs.mkShell {
             description = "Rust  Development Environment";
             # declared ENV variables when starting shell
             RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
 
             nativeBuildInputs = with pkgs; [
+              rustup
               rustc
               cargo
               gcc
               rustfmt
               clippy
-              openssl
               pkg-config
             ];
           };
 
-          rust-cap = pkgs.mkShell {
-            description = "Rust  Development Environment";
-            # declared ENV variables when starting shell
-            RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
-
-            shellHook =
-              ''
-                export PATH=$PATH:''${CARGO_HOME:-~/.cargo}/bin
-              ''
-              + lib.optionalString pkgs.stdenv.isDarwin ''
-                export NIX_LDFLAGS="-F${pkgs.darwin.apple_sdk.frameworks.CoreFoundation}/Library/Frameworks -framework CoreFoundation $NIX_LDFLAGS";
-
-              '';
-
-            nativeBuildInputs =
-              with pkgs;
-              [
-                rustup
-                rustc
-                cargo
-                rustfmt
-                clippy
-                ffmpeg
-              ]
-              ++ lib.optionals pkgs.stdenv.isDarwin (
-                with pkgs.darwin.apple_sdk;
-                [
-                  pkgs.libiconv
-                  pkgs.pkg-config
-                  frameworks.Security
-                  frameworks.SystemConfiguration
-                  frameworks.CoreFoundation
-                  frameworks.Cocoa
-                  frameworks.CoreMedia
-                  frameworks.Metal
-                  frameworks.AVFoundation
-                  frameworks.WebKit
-                  pkgs.darwin.apple_sdk_12_3.frameworks.ScreenCaptureKit
-                ]
-              );
+          #
+          #
+          #    $ nix develop github:budhilaw/nixverse#nodejs
+          #
+          #
+          nodejs = pkgs.mkShell {
+            description = "Node.js LTS Development Environment";
+            nativeBuildInputs = with pkgs; [
+              nodejs_22  # Current LTS version
+              nodePackages.npm
+              nodePackages.yarn
+              nodePackages.pnpm
+            ];
+            shellHook = ''
+              echo "Node.js LTS Development Environment"
+              echo "Node.js version: $(node --version)"
+              echo "npm version: $(npm --version)"
+              echo "yarn version: $(yarn --version)"
+              echo "pnpm version: $(pnpm --version)"
+            '';
           };
 
           #
@@ -245,13 +227,6 @@
               echo "To activate virtual environment: source .venv/bin/activate"
             '';
           };
-
-          #
-          #
-          #    $ nix develop github:budhilaw/nixverse#bun
-          #
-          #
-          bun = pkgs.mkShell { buildInputs = [ pkgs.bun ]; };
         };
 
     };

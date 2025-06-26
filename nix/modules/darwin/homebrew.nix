@@ -45,6 +45,12 @@ in
     "moonlight"
     "mounty"
 
+    # file system support
+    "macfuse"
+    
+    # android development
+    "android-file-transfer"
+
     # vpn
     "cloudflare-warp"
 

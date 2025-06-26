@@ -6,20 +6,18 @@
       inherit (prev.lib) attrsets;
       callPackage = prev.newScope { };
       packages = [
-        "brave-browser"
-        "microsoft-edge"
+        "google-chrome"
         "obs-studio"
         "orbstack"
         "telegram"
         "shottr"
         "dbeaver-community"
         "cursor"
-        "jetbrains-toolbox"
         "slack"
         "iterm2"
         "mendeley-reference-manager"
-        "notion"
-        "siyuan"
+        "ntfs-3g"
+        "postman"
       ];
     in
 
