@@ -6,7 +6,7 @@
       inherit (prev.lib) attrsets;
       callPackage = prev.newScope { };
       packages = [
-        "google-chrome"
+        "brave-browser"
         "obs-studio"
         "orbstack"
         "telegram"
@@ -18,6 +18,7 @@
         "mendeley-reference-manager"
         "ntfs-3g"
         "postman"
+        "zoom-us"
       ];
     in
 

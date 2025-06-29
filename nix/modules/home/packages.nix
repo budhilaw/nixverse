@@ -56,6 +56,7 @@
       kubectl
       (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
       docker
+      claude-code
 
       ##################################
       # Productivity
@@ -92,10 +93,10 @@
       raycast
       obs-studio
       iterm2
-      google-chrome
       ntfs-3g
       appcleaner
       stats
+      brave-browser
 
       ##################################
       # Developer Tools
@@ -104,6 +105,7 @@
       dbeaver-community
       postman
       cloudflared
+      orbstack
 
       ##################################
       # Study / Research

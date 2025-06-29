@@ -98,7 +98,7 @@
     persistent-apps = [
       # System apps 
       { app = "/System/Applications/Launchpad.app"; }
-      { app = "${pkgs.google-chrome}/Applications/Google Chrome.app"; }
+      { app = "${pkgs.brave-browser}/Applications/Brave Browser.app"; }
       { app = "/System/Applications/Calendar.app"; }
       { app = "/System/Applications/Messages.app"; }
       { app = "/System/Applications/Mail.app"; }
