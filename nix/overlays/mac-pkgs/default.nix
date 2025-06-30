@@ -16,6 +16,7 @@
         "slack"
         "iterm2"
         "mendeley-reference-manager"
+        "mongodb-compass"
         "ntfs-3g"
         "postman"
         "zoom-us"

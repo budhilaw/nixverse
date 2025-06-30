@@ -97,6 +97,7 @@
       appcleaner
       stats
       brave-browser
+      mongodb-compass
 
       ##################################
       # Developer Tools
