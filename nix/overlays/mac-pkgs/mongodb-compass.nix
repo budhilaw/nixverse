@@ -20,7 +20,7 @@ let
 
   sha256 =
     rec {
-      aarch64-darwin = "sha256-gzA7scqLhqQF43pjo7dOuYXLTNu8d0DbBBlFmSIDrDO=";
+      aarch64-darwin = "sha256-gwA7G8WYQV5DXms6HY7ruYXItPy4ckXbBB5pWpIwBqo=";
       x86_64-darwin = "sha256-BdZOZevmWeFodU27bib8dKrWxaJFHhqKbq6WojV9UMe=";
     }
     .${system} or throwSystem;

@@ -93,6 +93,7 @@
                 go-tools
                 go-migrate
                 go-mockery
+                protoc-gen-go
               ];
               shellHook = ''
                 export GOPATH="$(${go}/bin/go env GOPATH)"
