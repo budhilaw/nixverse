@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchurl, curl, writeShellScript }:
+{ lib, stdenv, fetchurl, curl, writeShellScript, cacert }:
 
 # This package always fetches the latest version of Claude Code CLI
 let
@@ -12,7 +12,7 @@ let
     OUTPUT="$2"
     
     echo "Downloading latest Claude Code CLI for $ARCH..."
-    ${curl}/bin/curl -fsSL "https://claude.ai/api/download/claude-code/darwin/$ARCH" -o "$OUTPUT"
+    ${curl}/bin/curl --cacert ${cacert}/etc/ssl/certs/ca-bundle.crt -fsSL "https://claude.ai/api/download/claude-code/darwin/$ARCH" -o "$OUTPUT"
     chmod +x "$OUTPUT"
     echo "Download complete."
   '';
@@ -24,7 +24,7 @@ stdenv.mkDerivation {
   dontUnpack = true;
   dontFetch = true;
   
-  buildInputs = [ curl ];
+  buildInputs = [ curl cacert ];
   
   buildPhase = ''
     runHook preBuild
