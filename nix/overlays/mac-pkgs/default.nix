@@ -7,6 +7,7 @@
       callPackage = prev.newScope { };
       packages = [
         "brave-browser"
+        "claude-code"
         "obs-studio"
         "orbstack"
         "telegram"
