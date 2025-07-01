@@ -7,6 +7,7 @@
       callPackage = prev.newScope { };
       packages = [
         "brave-browser"
+        "claude-code"
         "obs-studio"
         "orbstack"
         "telegram"
@@ -25,7 +26,6 @@
 
     attrsets.genAttrs packages (name: callPackage ./${name}.nix { })
     // {
-      claude-code = callPackage ./claude-code-alternative.nix { };
       sbar_menus = prev.callPackage "${self}/nix/packages/sketchybar/helpers/menus" { };
       sbar_events = prev.callPackage "${self}/nix/packages/sketchybar/helpers/event_providers" { };
       sbarLua = prev.callPackage "${self}/nix/packages/sketchybar/helpers/sbar.nix" { };

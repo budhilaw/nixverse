@@ -1,66 +1,46 @@
-{ lib, stdenv, fetchurl, curl, writeShellScript, cacert }:
+{
+  lib,
+  buildNpmPackage,
+  fetchzip,
+  nodejs_20,
+}:
 
-# This package always fetches the latest version of Claude Code CLI
-let
+buildNpmPackage rec {
   pname = "claude-code";
-  version = "latest";
-  
-  # Create a script to download the latest version
-  downloadScript = writeShellScript "download-claude-code" ''
-    set -eu
-    ARCH="$1"
-    OUTPUT="$2"
-    
-    echo "Downloading latest Claude Code CLI for $ARCH..."
-    ${curl}/bin/curl --cacert ${cacert}/etc/ssl/certs/ca-bundle.crt -fsSL "https://claude.ai/api/download/claude-code/darwin/$ARCH" -o "$OUTPUT"
-    chmod +x "$OUTPUT"
-    echo "Download complete."
-  '';
-in
+  version = "1.0.38";
 
-stdenv.mkDerivation {
-  inherit pname version;
-  
-  dontUnpack = true;
-  dontFetch = true;
-  
-  buildInputs = [ curl cacert ];
-  
-  buildPhase = ''
-    runHook preBuild
-    
-    ARCH="${if stdenv.isAarch64 then "arm64" else "x64"}"
-    ${ downloadScript } "$ARCH" "./claude-code"
-    
-    runHook postBuild
+  nodejs = nodejs_20; # required for sandboxed Nix builds on Darwin
+
+  src = fetchzip {
+    url = "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-${version}.tgz";
+    hash = "sha256-XANo3GKiD5n66GZrB+gZ15o2zTAOKkjcFNbGE3TT1NA=";
+  };
+
+  npmDepsHash = "sha256-u5AZXNlN/NAag+35uz3rzLh6ItbKAdV8RSSjzCGk6uA=";
+
+  postPatch = ''
+    cp ${./package-lock.json} package-lock.json
   '';
-  
-  installPhase = ''
-    runHook preInstall
-    
-    # Create bin directory
-    mkdir -p $out/bin
-    
-    # Install the binary
-    install -m755 ./claude-code $out/bin/claude-code
-    
-    # Generate shell completions (for future when supported)
-    # mkdir -p $out/share/bash-completion/completions
-    # mkdir -p $out/share/zsh/site-functions
-    # mkdir -p $out/share/fish/vendor_completions.d
-    # $out/bin/claude-code completion bash > $out/share/bash-completion/completions/claude-code
-    # $out/bin/claude-code completion zsh > $out/share/zsh/site-functions/_claude-code
-    # $out/bin/claude-code completion fish > $out/share/fish/vendor_completions.d/claude-code.fish
-    
-    runHook postInstall
+
+  dontNpmBuild = true;
+
+  AUTHORIZED = "1";
+
+  # `claude-code` tries to auto-update by default, this disables that functionality.
+  # https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview#environment-variables
+  postInstall = ''
+    wrapProgram $out/bin/claude \
+      --set DISABLE_AUTOUPDATER 1
   '';
-  
-  meta = with lib; {
-    description = "Claude Code CLI - command-line interface for Claude AI code assistant";
-    homepage = "https://claude.ai/";
-    platforms = [ "aarch64-darwin" "x86_64-darwin" ];
-    maintainers = with maintainers; [ ];
-    mainProgram = "claude-code";
-    sourceProvenance = [ sourceTypes.binaryNativeCode ];
+
+  passthru.updateScript = ./update.sh;
+
+  meta = {
+    description = "An agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster";
+    homepage = "https://github.com/anthropics/claude-code";
+    downloadPage = "https://www.npmjs.com/package/@anthropic-ai/claude-code";
+    license = lib.licenses.unfree;
+    maintainers = [ lib.maintainers.malo ];
+    mainProgram = "claude";
   };
 } 
