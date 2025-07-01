@@ -84,17 +84,6 @@
               description = "${name} Development Environment";
               buildInputs = with pkgs; [
                 go
-                gopls
-                go-outline
-                gocode-gomod
-                golangci-lint
-                godef
-                golint
-                delve
-                go-tools
-                go-migrate
-                go-mockery
-                protoc-gen-go
               ];
               shellHook = ''
                 export GOPATH="$(${go}/bin/go env GOPATH)"
@@ -146,7 +135,20 @@
           #
           go = pkgs.mkShell {
             description = "Go Development Environment";
-            nativeBuildInputs = [ pkgs.go ];
+            nativeBuildInputs = with pkgs; [
+              go
+              gopls
+              go-outline
+              gocode-gomod
+              golangci-lint
+              godef
+              golint
+              delve
+              go-tools
+              go-migrate
+              go-mockery
+              protoc-gen-go
+            ];
             shellHook = ''
               export GOPATH="$(${pkgs.go}/bin/go env GOPATH)"
               export PATH="$PATH:$GOPATH/bin"

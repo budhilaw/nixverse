@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "Bash(find:*)",
+      "Bash(echo $IN_NIX_SHELL)",
+      "Bash(/nix/store/5z49nhvzp7i2p66w5kcc6gp88mf6ykm2-golangci-lint-2.1.6/bin/golangci-lint --version)"
+    ],
+    "deny": []
+  }
+}
