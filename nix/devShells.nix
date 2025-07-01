@@ -87,6 +87,7 @@
                 gopls
                 go-outline
                 gocode-gomod
+                golangci-lint
                 godef
                 golint
                 delve

@@ -20,7 +20,9 @@ in
   # The preUserActivation script has been removed as it's deprecated
 
   homebrew.enable = true;
-  homebrew.brews = [ ];
+  homebrew.brews = [
+    "protobuf"
+  ];
   homebrew.onActivation.cleanup = "zap";
   homebrew.global.brewfile = true;
 
