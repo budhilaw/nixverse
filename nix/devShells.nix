@@ -136,7 +136,7 @@
           go = pkgs.mkShell {
             description = "Go Development Environment";
             nativeBuildInputs = with pkgs; [
-              go
+              pkgs.go
               gopls
               go-outline
               gocode-gomod
