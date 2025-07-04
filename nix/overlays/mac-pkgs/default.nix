@@ -19,8 +19,8 @@
         "mendeley-reference-manager"
         "mongodb-compass"
         "ntfs-3g"
-        "postman"
         "zoom-us"
+        "jetbrains-toolbox"
       ];
     in
 

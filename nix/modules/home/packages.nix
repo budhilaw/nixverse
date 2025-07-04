@@ -105,9 +105,9 @@
       ##################################
       xcode-install
       dbeaver-community
-      postman
       cloudflared
       orbstack
+      jetbrains-toolbox
 
       ##################################
       # Study / Research

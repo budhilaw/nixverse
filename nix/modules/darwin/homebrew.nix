@@ -59,8 +59,9 @@ in
     # communication
     "slack"
 
-    # code
+    # developer tools
     "cursor"
+    "postman"
   ];
 
 }

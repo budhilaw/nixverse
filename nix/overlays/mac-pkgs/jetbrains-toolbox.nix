@@ -2,13 +2,13 @@
 
 let
   pname = "jetbrains-toolbox";
-  version = "2.6.1";
-  build = "2.6.1.40902";
+  version = "2.6.3";
+  build = "2.6.3.43718";
   
   sources = {
     aarch64-darwin = fetchurl {
       url = "https://download.jetbrains.com/toolbox/jetbrains-toolbox-${build}-arm64.dmg";
-      sha256 = "sha256-b/z8Pq8h6n34junSMyxRS3Y/TQ3tu05Bh77xlvMvEtI=";
+      sha256 = "sha256-A4smWImeHwgQa9oaRpt/WPRxG+DWCdQ7ZrjNNKwV06I=";
     };
     x86_64-darwin = fetchurl {
       url = "https://download.jetbrains.com/toolbox/jetbrains-toolbox-${build}.dmg";

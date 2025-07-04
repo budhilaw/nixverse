@@ -140,7 +140,6 @@
               gopls
               go-outline
               gocode-gomod
-              golangci-lint
               godef
               golint
               delve
@@ -148,10 +147,18 @@
               go-migrate
               go-mockery
               protoc-gen-go
+              # Option 1: Get latest golangci-lint from master branch
+              pkgs.branches.master.golangci-lint
+              # Option 2: Use custom latest version (uncomment if you prefer this)
+              # pkgs.golangci-lint-latest
             ];
             shellHook = ''
               export GOPATH="$(${pkgs.go}/bin/go env GOPATH)"
               export PATH="$PATH:$GOPATH/bin"
+              
+              echo "Go Development Environment"
+              echo "Go version: $(go version)"
+              echo "golangci-lint version: $(golangci-lint --version)"
             '';
           };
 

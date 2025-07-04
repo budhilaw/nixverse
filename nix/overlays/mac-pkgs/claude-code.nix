@@ -21,7 +21,6 @@ stdenv.mkDerivation {
   
   nativeBuildInputs = [ nodejs_20 makeWrapper ];
   
-  # Don't try to use network during build
   buildPhase = ''
     runHook preBuild
     
@@ -29,9 +28,7 @@ stdenv.mkDerivation {
     tar -xf $src
     cd package
     
-    echo "Package contents:"
-    ls -la
-    
+    # Create the node_modules directory structure
     mkdir -p $out/lib/node_modules/@anthropic-ai/claude-code
     cp -r . $out/lib/node_modules/@anthropic-ai/claude-code/
     
@@ -47,6 +44,8 @@ stdenv.mkDerivation {
     mkdir -p $out/bin
     
     # Create a wrapper script for the CLI
+    # The package doesn't have a bin/claude binary, but a cli.js file at the root
+    # We create a wrapper that runs: node cli.js
     makeWrapper ${nodejs_20}/bin/node $out/bin/claude \
       --add-flags "$out/lib/node_modules/@anthropic-ai/claude-code/cli.js" \
       --set DISABLE_AUTOUPDATER 1 \
