@@ -38,14 +38,14 @@ in
       '';
     };
 
-    programs.fish.interactiveShellInit = mkIf (!pkgs.stdenv.isDarwin) ''
+    programs.fish.interactiveShellInit = ''
       # Set GPG_TTY for pinentry
       set -gx GPG_TTY (tty)
       # Refresh gpg-agent tty in case user switches into an X session
       gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
     '';
 
-    home.sessionVariables = mkIf (!pkgs.stdenv.isDarwin) {
+    home.sessionVariables = {
       GPG_TTY = "$(tty)";
     };
   };
