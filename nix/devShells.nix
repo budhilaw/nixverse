@@ -181,6 +181,10 @@
               clippy
               pkg-config
             ];
+
+            shellHook = ''
+              export PATH="$PATH:$HOME/.cargo/bin"
+            '';
           };
 
           #

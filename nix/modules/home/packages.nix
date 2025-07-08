@@ -46,7 +46,6 @@
       eza
       fastfetch
       git
-      pinentry-curses
 
       ################################## 
       # Development
@@ -58,6 +57,7 @@
       docker
       claude-code
       mkcert
+      vscode
 
       ##################################
       # Productivity
@@ -78,6 +78,7 @@
     ++ lib.optionals stdenv.isDarwin [
       mas
       m-cli # useful macOS CLI commands
+      pinentry-curses
       
       ##################################
       # Entertainment
@@ -107,7 +108,6 @@
       dbeaver-community
       cloudflared
       orbstack
-      jetbrains-toolbox
 
       ##################################
       # Study / Research

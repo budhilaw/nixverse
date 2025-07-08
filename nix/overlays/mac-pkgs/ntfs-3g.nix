@@ -2,31 +2,34 @@
   lib,
   stdenv,
   writeScriptBin,
+  ntfs3g,
   ...
 }:
 
 writeScriptBin "ntfs-3g" ''
   #!/bin/bash
   
-  # Simple NTFS-3G wrapper for macOS with macFUSE
-  # This script provides the ntfs-3g interface that Mounty expects
+  # NTFS-3G wrapper for macOS with macFUSE
+  # Provides read-write NTFS support using macFUSE
   
   set -e
   
   DEVICE=""
   MOUNTPOINT=""
-  OPTIONS=""
+  OPTIONS="rw,allow_other,local"
   
   # Parse arguments
   while [[ $# -gt 0 ]]; do
     case $1 in
       -o)
-        OPTIONS="$2"
+        if [[ -n "$2" ]]; then
+          OPTIONS="$2"
+        fi
         shift 2
         ;;
       -*)
-        # Other options, add to OPTIONS
-        OPTIONS="$OPTIONS $1"
+        # Add other options to the options string
+        OPTIONS="$OPTIONS,$1"
         shift
         ;;
       *)
@@ -42,31 +45,32 @@ writeScriptBin "ntfs-3g" ''
   
   if [[ -z "$DEVICE" || -z "$MOUNTPOINT" ]]; then
     echo "Usage: ntfs-3g <device> <mountpoint> [options]"
-    echo "NTFS-3G wrapper for macOS with macFUSE"
+    echo "NTFS-3G for macOS with macFUSE - provides read-write NTFS support"
     exit 1
   fi
   
   # Check if macFUSE is available
-  if ! command -v mount_osxfuse >/dev/null 2>&1 && ! command -v mount_macfuse >/dev/null 2>&1; then
-    echo "Error: macFUSE is not installed or not in PATH"
-    echo "Please install macFUSE via Homebrew: brew install --cask macfuse"
+  if ! [ -f "/Library/Filesystems/macfuse.fs/Contents/Resources/mount_macfuse" ]; then
+    echo "Error: macFUSE is not installed"
+    echo "Please install macFUSE via: brew install --cask macfuse"
+    echo "After installation, you may need to approve the system extension in System Settings."
     exit 1
   fi
   
-  echo "Mounting NTFS device $DEVICE at $MOUNTPOINT..."
-  
-  # Try to use native macOS NTFS support first (read-only)
-  if mount -t ntfs "$DEVICE" "$MOUNTPOINT" 2>/dev/null; then
-    echo "Mounted $DEVICE at $MOUNTPOINT (read-only)"
-    exit 0
+  # Create mount point if it doesn't exist
+  if [ ! -d "$MOUNTPOINT" ]; then
+    echo "Creating mount point: $MOUNTPOINT"
+    sudo mkdir -p "$MOUNTPOINT"
   fi
   
-  # For now, just show info and suggest using Disk Utility
-  echo "Note: This is a basic NTFS-3G wrapper."
-  echo "For full read-write NTFS support, please use:"
-  echo "1. Disk Utility (for basic access)"
-  echo "2. A commercial NTFS driver like Paragon NTFS"
-  echo "3. The full ntfs-3g package from Homebrew"
+  echo "Mounting NTFS device $DEVICE at $MOUNTPOINT with read-write access..."
   
-  exit 1
+  # Set volume name if not specified
+  VOLNAME=$(basename "$MOUNTPOINT")
+  if [[ "$OPTIONS" != *"volname="* ]]; then
+    OPTIONS="$OPTIONS,volname=$VOLNAME"
+  fi
+  
+  # Use the nixpkgs ntfs-3g with proper macFUSE integration
+  exec ${ntfs3g}/bin/ntfs-3g "$DEVICE" "$MOUNTPOINT" -o "$OPTIONS"
 '' 

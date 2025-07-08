@@ -20,7 +20,6 @@
         "mongodb-compass"
         "ntfs-3g"
         "zoom-us"
-        "jetbrains-toolbox"
       ];
     in
 

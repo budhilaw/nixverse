@@ -49,7 +49,7 @@ in
 
     # file system support
     "macfuse"
-    
+     
     # android development
     "android-file-transfer"
 
