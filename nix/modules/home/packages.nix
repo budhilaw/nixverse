@@ -97,7 +97,6 @@
       iterm2
       ntfs-3g
       appcleaner
-      stats
       brave-browser
       mongodb-compass
 
