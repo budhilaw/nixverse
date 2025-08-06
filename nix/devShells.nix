@@ -264,10 +264,10 @@
 
           #
           #
-          #    $ nix develop github:budhilaw/nixverse#php
+          #    $ nix develop github:budhilaw/nixverse#phpdev
           #
           #
-          php = pkgs.mkShell {
+          phpdev = pkgs.mkShell {
             description = "PHP Development Environment for Laravel & WordPress";
             nativeBuildInputs = with pkgs; [
               php
