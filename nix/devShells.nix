@@ -91,12 +91,30 @@
               '';
             };
 
+          mkPhpShell =
+            name:
+            let
+              php = pkgs.${name};
+            in
+            pkgs.mkShell {
+              description = "${name} Development Environment";
+              buildInputs = with pkgs; [
+                php
+                php.packages.composer
+              ];
+              shellHook = ''
+                export PATH="$PATH:$HOME/.composer/vendor/bin"
+              '';
+            };
+
           mkShell =
             pkgName: name:
             if lib.strings.hasPrefix "nodejs_" pkgName then
               mkNodeShell name
             else if lib.strings.hasPrefix "go_" pkgName then
               mkGoShell name
+            else if lib.strings.hasPrefix "php" pkgName then
+              mkPhpShell name
             else
               builtins.throw "Unknown package ${pkgName} for making shell environment";
 
@@ -120,6 +138,7 @@
         #
         mkShells "nodejs_"
         // mkShells "go_"
+        // mkShells "php"
         // rec {
           default = pkgs.mkShell {
             shellHook = ''
@@ -195,7 +214,7 @@
           nodejs = pkgs.mkShell {
             description = "Node.js LTS Development Environment";
             nativeBuildInputs = with pkgs; [
-              nodejs_22  # Current LTS version
+              nodejs_24
               nodePackages.npm
               nodePackages.yarn
               nodePackages.pnpm
@@ -240,6 +259,66 @@
               fi
               
               echo "To activate virtual environment: source .venv/bin/activate"
+            '';
+          };
+
+          #
+          #
+          #    $ nix develop github:budhilaw/nixverse#php
+          #
+          #
+          php = pkgs.mkShell {
+            description = "PHP Development Environment for Laravel & WordPress";
+            nativeBuildInputs = with pkgs; [
+              php
+              php84Packages.composer
+              nodejs_24
+              nodePackages.npm
+              wp-cli
+              curl
+              wget
+            ];
+            shellHook = ''
+              echo "PHP Development Environment for Laravel & WordPress"
+              echo "PHP version: $(php --version | head -n1)"
+              echo "Composer version: $(composer --version)"
+              echo "Node.js version: $(node --version)"
+              
+              # Set up PHP paths
+              export PATH="$PATH:$HOME/.composer/vendor/bin"
+              
+              # Check if we're in fish shell and set up aliases accordingly
+              if [ "$SHELL" = "$(which fish)" ] || [ -n "$FISH_VERSION" ]; then
+                # Fish shell aliases
+                fish -c "alias art='php artisan'"
+                fish -c "alias artisan='php artisan'"
+                fish -c "alias serve='php artisan serve'"
+                fish -c "alias migrate='php artisan migrate'"
+                fish -c "alias fresh='php artisan migrate:fresh --seed'"
+                fish -c "alias tinker='php artisan tinker'"
+                fish -c "alias wp='wp-cli'"
+                fish -c "funcsave art artisan serve migrate fresh tinker wp"
+              else
+                # Bash/zsh aliases
+                alias art="php artisan"
+                alias artisan="php artisan"
+                alias serve="php artisan serve"
+                alias migrate="php artisan migrate"
+                alias fresh="php artisan migrate:fresh --seed"
+                alias tinker="php artisan tinker"
+                alias wp="wp-cli"
+              fi
+              
+              echo ""
+              echo "Available tools:"
+              echo "  - PHP with Composer"
+              echo "  - Node.js with npm"
+              echo "  - Laravel aliases: art, artisan, serve, migrate, fresh, tinker"
+              echo "  - WordPress CLI alias: wp"
+              echo ""
+              echo "Quick start:"
+              echo "  Laravel: composer create-project laravel/laravel project-name"
+              echo "  WordPress: Download from wordpress.org or use composer"
             '';
           };
         };
