@@ -10,7 +10,7 @@
         "claude-code"
         "obs-studio"
         "orbstack"
-        #"telegram"
+        "telegram"
         "shottr"
         "dbeaver-community"
         "cursor"

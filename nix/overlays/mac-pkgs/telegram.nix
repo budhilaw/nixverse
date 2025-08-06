@@ -14,14 +14,14 @@ let
   # see version history https://desktop.telegram.org/changelog
   version =
     rec {
-      aarch64-darwin = "5.5.5";
+      aarch64-darwin = "6.0.2";
       x86_64-darwin = aarch64-darwin;
     }
     .${system} or throwSystem;
 
   sha256 =
     rec {
-      aarch64-darwin = "sha256-Z1XJW69vEFjZnAqPn6tvKGx3El+5cdk64QRo25epXpg=";
+      aarch64-darwin = "sha256-d+hGRKJcOW0phSRvn8sNPbOUatSqg2UCx3Kltf9SHhQ=";
       x86_64-darwin = aarch64-darwin;
     }
     .${system} or throwSystem;

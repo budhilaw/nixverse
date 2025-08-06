@@ -117,6 +117,6 @@
       # Communication
       ##################################
       zoom-us
-      # telegram
+      telegram
     ];
 }
