@@ -89,7 +89,7 @@
       # Productivity
       ##################################
       rectangle
-      hidden-bar
+      ice-bar
       shottr
       pinentry_mac
       raycast
@@ -118,6 +118,6 @@
       # Communication
       ##################################
       zoom-us
-      telegram
+      # telegram
     ];
 }
