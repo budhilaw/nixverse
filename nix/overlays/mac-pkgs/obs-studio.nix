@@ -22,7 +22,7 @@ let
   sha256 =
     {
       aarch64-darwin = "sha256-fAVmRGNqeUyxgoGvmNVLV5WtiwmF6VDZO4xRC2RbYpg=";
-      x86_64-darwin = "sha256-fWEPWrHJ0UKQ2CfkSbLMntmbuLSaiQ0drPBhGs6+RPo=";
+      x86_64-darwin = "sha256-fWEPWrHJ0UKQ2CfkSbLMntmbuLSaiQ0crPBhGs6+RPo=";
     }
     .${system} or throwSystem;
 
@@ -33,11 +33,11 @@ let
     {
       aarch64-darwin = {
         inherit sha256;
-        url = "${base}/obs-studio-${version}-macos-arm64.dmg";
+        url = "${base}/obs-studio-${version}-macos-apple.dmg";
       };
       x86_64-darwin = {
         inherit sha256;
-        url = "${base}/obs-studio-${version}-macos-x86_64.dmg";
+        url = "${base}/obs-studio-${version}-macos-intel.dmg";
       };
     };
 
