@@ -49,7 +49,9 @@
   };
 
   # --- nix-darwin
+  # Intel Mac: Homebrew installs to /usr/local instead of /opt/homebrew
   homebrew.enable = true;
+  homebrew.prefix = "/usr/local";
 
   networking = {
     hostName = lib.mkDefault "NB-EricssonBudhilaw-Tech";
