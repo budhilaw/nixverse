@@ -98,8 +98,6 @@
       ntfs-3g
       appcleaner
       brave-browser
-      mongodb-compass
-
       ##################################
       # Developer Tools
       ##################################
