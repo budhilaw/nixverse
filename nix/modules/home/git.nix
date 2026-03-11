@@ -73,28 +73,6 @@ in
       signingKey = ${ericharsya.signingKey}
   '';
 
-  # SSH config activation script to create file with proper permissions
-  home.activation.sshConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    $DRY_RUN_CMD mkdir -p ~/.ssh
-    $DRY_RUN_CMD cat > ~/.ssh/config << 'EOF'
-    Host *
-        UseKeychain yes
-
-    Host github.com
-      HostName github.com
-      User git
-      IdentityFile ~/.ssh/id_ed25519_personal
-      IdentitiesOnly yes
-      
-    Host github.com-paper
-      HostName github.com
-      User git
-      IdentityFile ~/.ssh/id_ed25519_paper
-      IdentitiesOnly yes
-    EOF
-    $DRY_RUN_CMD chmod 600 ~/.ssh/config
-  '';
-
   ### git tools
   ## github cli
   programs.gh = {

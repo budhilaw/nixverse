@@ -1,0 +1,31 @@
+##############################################################################
+# SOPS configuration
+#
+# Setup (one-time per machine):
+#   nix run nixpkgs#age -- keygen -o ~/.config/sops/age/keys.txt
+#   Replace the TODO placeholders below with the printed "public key: age1..."
+#   Save the private key (AGE-SECRET-KEY-1...) to 1Password
+##############################################################################
+keys:
+  - &budhilaw_personal age1TODO_REPLACE_WITH_PERSONAL_MAC_AGE_PUBLIC_KEY
+  - &ericssonbudhilaw_work age1TODO_REPLACE_WITH_WORK_MAC_AGE_PUBLIC_KEY
+
+creation_rules:
+  # Personal Mac secrets — decryptable only on personal Mac
+  - path_regex: secrets/budhilaw-.*\.yaml$
+    key_groups:
+      - age:
+          - *budhilaw_personal
+
+  # Work Mac secrets — decryptable only on work Mac
+  - path_regex: secrets/ericssonbudhilaw-.*\.yaml$
+    key_groups:
+      - age:
+          - *ericssonbudhilaw_work
+
+  # Shared secrets — decryptable on both machines
+  - path_regex: secrets/shared-.*\.yaml$
+    key_groups:
+      - age:
+          - *budhilaw_personal
+          - *ericssonbudhilaw_work

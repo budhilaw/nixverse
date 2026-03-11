@@ -1,2 +1,5 @@
 result
 .DS_Store
+
+# Never commit unencrypted secrets — only *.yaml.example files are safe
+secrets/*.yaml
