@@ -11,7 +11,7 @@
   imports = lib.attrValues (ezModules // crossModules);
 
   system.stateVersion = 4;
-  nixpkgs.hostPlatform = "x86_64-darwin";
+  nixpkgs.hostPlatform = "aarch64-darwin";
 
   # Suppress "options.json without proper context" warning from nix-darwin docs generation
   documentation.enable = false;
@@ -49,9 +49,7 @@
   };
 
   # --- nix-darwin
-  # Intel Mac: Homebrew installs to /usr/local instead of /opt/homebrew
   homebrew.enable = true;
-  homebrew.prefix = "/usr/local";
 
   networking = {
     hostName = lib.mkDefault "NB-EricssonBudhilaw-Tech";
