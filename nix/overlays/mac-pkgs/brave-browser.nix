@@ -11,7 +11,7 @@ let
 
   pname = "brave-browser";
   version = "1.87.192.0";
-  build = "187192";
+  build = "187.192";
 
   sha256 =
     {
