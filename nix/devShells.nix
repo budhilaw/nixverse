@@ -61,14 +61,17 @@
           mkNodeShell =
             name:
             let
-              node = pkgs.${name};
+              # Use stable nixpkgs for NodeJS to guarantee binary cache hits.
+              # nixpkgs-unstable packages may not be cached yet on Hydra for
+              # the current commit, causing full rebuilds from source.
+              node = pkgs.branches.stable.${name};
             in
             pkgs.mkShell {
               description = "${name} Development Environment";
               buildInputs = [
                 node
-                pkgs.yarn
-                pkgs.pnpm
+                pkgs.branches.stable.yarn
+                pkgs.branches.stable.pnpm
               ];
             };
 
@@ -210,7 +213,7 @@
           #
           nodejs = pkgs.mkShell {
             description = "Node.js LTS Development Environment";
-            nativeBuildInputs = with pkgs; [
+            nativeBuildInputs = with pkgs.branches.stable; [
               nodejs_24
               yarn
               pnpm
@@ -268,8 +271,7 @@
             nativeBuildInputs = with pkgs; [
               php
               php84Packages.composer
-              nodejs_24
-              nodePackages.npm
+              branches.stable.nodejs_24
               wp-cli
               curl
               wget
