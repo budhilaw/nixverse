@@ -2,7 +2,7 @@
   lib,
   stdenv,
   fetchurl,
-  undmg,
+  unzip,
 }:
 
 let
@@ -12,27 +12,20 @@ let
   pname = "telegram";
 
   # see version history https://desktop.telegram.org/changelog
-  version =
-    rec {
-      aarch64-darwin = "6.0.2";
-      x86_64-darwin = aarch64-darwin;
-    }
-    .${system} or throwSystem;
+  version = "12.5";
+  build = "278815";
 
   sha256 =
     rec {
-      aarch64-darwin = "sha256-d+hGRKJcOW0phSRvn8sNPbOUatSqg2UCx3Kltf9SHhQ=";
+      aarch64-darwin = "sha256-79OzpA5rm+xSHb/aerHLPn0FV8lvdrM3dhJL4Iephs0=";
       x86_64-darwin = aarch64-darwin;
     }
     .${system} or throwSystem;
 
   srcs =
-    let
-      base = "https://updates.tdesktop.com/tmac";
-    in
     rec {
       aarch64-darwin = {
-        url = "${base}/tsetup.${version}.dmg";
+        url = "https://osx.telegram.org/updates/Telegram-${version}.${build}.app.zip";
         sha256 = sha256;
       };
       x86_64-darwin = aarch64-darwin;
@@ -58,7 +51,7 @@ let
       meta
       ;
 
-    nativeBuildInputs = [ undmg ];
+    nativeBuildInputs = [ unzip ];
 
     sourceRoot = "Telegram.app";
 

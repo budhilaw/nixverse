@@ -2,16 +2,16 @@
 
 let
   pname = "dbeaver-community";
-  version = "25.1.4";
-  
+  version = "26.0.0";
+
   sources = {
     aarch64-darwin = fetchurl {
       url = "https://dbeaver.io/files/${version}/dbeaver-ce-${version}-macos-aarch64.dmg";
-      sha256 = "sha256-/NClQkx6In9lS4vtk2lBhFHw0BLObmNqTIVJfhJcob4=";
+      sha256 = "sha256-WzHVhabcIXnodiXB/5fFCu97YcPibB6N21m/7T8/aqo=";
     };
     x86_64-darwin = fetchurl {
       url = "https://dbeaver.io/files/${version}/dbeaver-ce-${version}-macos-x86_64.dmg";
-      sha256 = "6eeebb4f3f1ac0043af629d8dacdf7d20daa3da9f6b512d6226798c7d1c1ded5";
+      sha256 = "sha256-G1Xv4nucb0uCjboS1rvtfy6ri0oHPHZmu+jea9PC6Q4=";
     };
   };
 in

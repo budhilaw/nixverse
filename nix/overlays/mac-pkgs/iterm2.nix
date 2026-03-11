@@ -14,7 +14,7 @@ let
 
   version =
     rec {
-      aarch64-darwin = "3.5.14";
+      aarch64-darwin = "3.6.9";
       x86_64-darwin = aarch64-darwin;
     }
     .${system} or throwSystem;
@@ -22,7 +22,7 @@ let
   # SHA hash for iTerm2 v3.5.13
   sha256 =
     rec {
-      aarch64-darwin = "sha256-WFvRGeTPOl5r+m87av7PQW8C4o+NgaOh6UmFXaBYy90=";
+      aarch64-darwin = "sha256-J8APR2l4wKJDFEoOA/ATRfrNCBLOQRL6uqVBaMBQsZ4=";
       x86_64-darwin = aarch64-darwin;
     }
     .${system} or throwSystem;

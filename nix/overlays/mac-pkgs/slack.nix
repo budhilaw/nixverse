@@ -13,15 +13,15 @@ let
 
   version =
     rec {
-      aarch64-darwin = "4.43.51";
+      aarch64-darwin = "4.48.100";
       x86_64-darwin = aarch64-darwin;
     }
     .${system} or throwSystem;
 
   sha256 =
     rec {
-      aarch64-darwin = "sha256-+9yPOtj2tCl29Te7FxJkI1hzJv4KRyvhVUzH5q5j0N0="; # fbdc8f3ad8f6b42976f537bb17126423587326fe0a472be1554cc7e6ae63d0dd
-      x86_64-darwin = "sha256-DsYW1LbCnR2s1zXG+2rLUdlMWwW1lxyLh+FtlbMbH7w="; # 0ec14540b667430ebe97b18d861bf8763fba4c5cad94a2cbb5e1d3bb46f6b1bc
+      aarch64-darwin = "sha256-vzgxVBRncNQ4mchSgbe9vm3kEiPXHeMlhm3Xq4COi7A=";
+      x86_64-darwin = "sha256-5IEIgDxdE2Pnpy3gkJT3Cwzo3hRoTPziFAj30SnapVQ=";
     }
     .${system} or throwSystem;
 

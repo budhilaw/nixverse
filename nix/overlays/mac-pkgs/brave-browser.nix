@@ -10,38 +10,26 @@ let
   throwSystem = throw "Unsupported system: ${system}";
 
   pname = "brave-browser";
-
-  version =
-    rec {
-      aarch64-darwin = "1.81.131";
-      x86_64-darwin = aarch64-darwin;
-    }
-    .${system} or throwSystem;
+  version = "1.87.192.0";
+  build = "187192";
 
   sha256 =
-    rec {
-      aarch64-darwin = "sha256-NQzUf4RhWoQMxuDoEmwI4nPkCZkE5UIopSoQdcH1Kj8=";
-      x86_64-darwin = "sha256-0yBPBSf7V/c56AmTYdZuyj/D+N67WeHpD5UjuCEfHjs=";
+    {
+      aarch64-darwin = "sha256-ELSKbJzYdl3eMCMkdbs/UAhNoKKNwESqOTD7PxPwB2A=";
+      x86_64-darwin = "sha256-HpMeLs2USb8tWGp2H5eaTxHh+NGQ5NFrXrbG7bcP8PA=";
     }
     .${system} or throwSystem;
 
-  srcs =
-    let
-      # Remove the trailing .0 from version for GitHub releases
-      versionTag = "v${version}";
-      arch = if system == "aarch64-darwin" then "arm64" else "x64";
-      base = "https://github.com/brave/brave-browser/releases/download";
-    in
-    rec {
-      aarch64-darwin = {
-        url = "${base}/${versionTag}/Brave-Browser-arm64.dmg";
-        sha256 = sha256;
-      };
-      x86_64-darwin = {
-        url = "${base}/${versionTag}/Brave-Browser-x64.dmg";
-        sha256 = sha256;
-      };
+  srcs = {
+    aarch64-darwin = {
+      url = "https://updates-cdn.bravesoftware.com/sparkle/Brave-Browser/stable-arm64/${build}/Brave-Browser-arm64.dmg";
+      sha256 = sha256;
     };
+    x86_64-darwin = {
+      url = "https://updates-cdn.bravesoftware.com/sparkle/Brave-Browser/stable/${build}/Brave-Browser-x64.dmg";
+      sha256 = sha256;
+    };
+  };
 
   src = fetchurl (srcs.${system} or throwSystem);
 
@@ -77,4 +65,4 @@ let
     '';
   };
 in
-darwin 
+darwin

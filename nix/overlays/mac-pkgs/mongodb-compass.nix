@@ -13,24 +13,24 @@ let
 
   version =
     rec {
-      aarch64-darwin = "1.46.4";
+      aarch64-darwin = "1.49.3";
       x86_64-darwin = aarch64-darwin;
     }
     .${system} or throwSystem;
 
   sha256 =
-    rec {
-      aarch64-darwin = "sha256-gwA7G8WYQV5DXms6HY7ruYXItPy4ckXbBB5pWpIwBqo=";
-      x86_64-darwin = "sha256-BdZOZevmWeFodU27bib8dKrWxaJFHhqKbq6WojV9UMe=";
+    {
+      aarch64-darwin = "sha256-dTta3itE27AVD1rsSSKUryafimwDQMPIVKuw+ICzlu8=";
+      x86_64-darwin = "sha256-91Hiwdi0sno741rNVK6pW+mj+2hHm8dtNgQ2Vw7GfbY=";
     }
     .${system} or throwSystem;
 
   srcs =
     let
-      arch = if system == "aarch64-darwin" then "arm64" else "x64";
+      arch = if system == "aarch64-darwin" then "arm64" else "x86_64";
       base = "https://downloads.mongodb.com/compass";
     in
-    rec {
+    {
       aarch64-darwin = {
         url = "${base}/mongodb-compass-${version}-darwin-${arch}.dmg";
         sha256 = sha256;
@@ -75,4 +75,4 @@ let
     '';
   };
 in
-darwin 
+darwin

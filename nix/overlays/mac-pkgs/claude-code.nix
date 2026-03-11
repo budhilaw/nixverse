@@ -8,11 +8,11 @@
 
 let
   pname = "claude-code";
-  version = "1.0.69";
-  
+  version = "2.1.72";
+
   src = fetchurl {
     url = "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-${version}.tgz";
-    hash = "sha256-UTYBdTNPWNY5ISjE+OI/S9nSrxIo0FCunwSUZxdmvkE=";
+    hash = "sha512-GhoUURM5xUPL+DSn0jMPXDEkWvocl5lqCs/wnyYDUliY0fBlXm7LxWnjLCBPZ0LoeUnr2e6MFRBxyUFrgrRp0A==";
   };
 in
 

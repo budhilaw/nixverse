@@ -14,15 +14,15 @@ let
 
   version =
     rec {
-      aarch64-darwin = "31.0.3";
+      aarch64-darwin = "32.0.4";
       x86_64-darwin = aarch64-darwin;
     }
     .${system} or throwSystem;
 
   sha256 =
-    rec {
-      aarch64-darwin = "sha256-Kf4YcE61E048weSG3P0uPB5p3wa5GKIFKcLmfLnZWQ0=";
-      x86_64-darwin = aarch64-darwin;
+    {
+      aarch64-darwin = "sha256-fAVmRGNqeUyxgoGvmNVLV5WtiwmF6VDZO4xRC2RbYpg=";
+      x86_64-darwin = "sha256-fWEPWrHJ0UKQ2CfkSbLMntmbuLSaiQ0drPBhGs6+RPo=";
     }
     .${system} or throwSystem;
 
@@ -30,12 +30,13 @@ let
     let
       base = "https://cdn-fastly.obsproject.com/downloads";
     in
-    rec {
+    {
       aarch64-darwin = {
         inherit sha256;
-        url = "${base}/obs-studio-${version}-macos-apple.dmg";
+        url = "${base}/obs-studio-${version}-macos-arm64.dmg";
       };
-      x86_64-darwin = aarch64-darwin // {
+      x86_64-darwin = {
+        inherit sha256;
         url = "${base}/obs-studio-${version}-macos-x86_64.dmg";
       };
     };

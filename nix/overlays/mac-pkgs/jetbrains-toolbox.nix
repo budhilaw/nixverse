@@ -2,17 +2,17 @@
 
 let
   pname = "jetbrains-toolbox";
-  version = "2.6.3";
-  build = "2.6.3.43718";
-  
+  version = "3.3.1";
+  build = "3.3.1.75249";
+
   sources = {
     aarch64-darwin = fetchurl {
       url = "https://download.jetbrains.com/toolbox/jetbrains-toolbox-${build}-arm64.dmg";
-      sha256 = "sha256-A4smWImeHwgQa9oaRpt/WPRxG+DWCdQ7ZrjNNKwV06I=";
+      sha256 = "sha256-B6Kv5rAJqlQfSn83KUUi933kiN8AGRU+mom8e4sRZEM=";
     };
     x86_64-darwin = fetchurl {
       url = "https://download.jetbrains.com/toolbox/jetbrains-toolbox-${build}.dmg";
-      sha256 = "cb4cd7404a98e658ff7b8e34751b7205f6b0f02c2aaa0ccedd48eb79bdfb67f2";
+      sha256 = "sha256-aNTPYaayR3aA/Q44rYRSJyBddYona/oZ8u2YYjf3uxc=";
     };
   };
 in

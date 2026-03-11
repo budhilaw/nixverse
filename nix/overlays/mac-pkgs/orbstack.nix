@@ -14,15 +14,15 @@ let
 
   version =
     rec {
-      aarch64-darwin = "1.11.3_19358";
+      aarch64-darwin = "2.0.5_19905";
       x86_64-darwin = aarch64-darwin;
     }
     .${system} or throwSystem;
 
   sha256 =
-    rec {
-      aarch64-darwin = "sha256-/zujkmctMdJUm3d7Rjjeic8QrvWSlEAUhjFgouBXeNw=";
-      x86_64-darwin = aarch64-darwin;
+    {
+      aarch64-darwin = "sha256-YBiJVRzf3H/u4Ui3/bBID6C6XA2wvo8cBH/IQIhqdXE=";
+      x86_64-darwin = "sha256-qFj6Lc0m9/dc1/mcJO0aafRZs5vyCQyCb5l+zJwdF+s=";
     }
     .${system} or throwSystem;
 
@@ -30,13 +30,14 @@ let
     let
       base = "https://cdn-updates.orbstack.dev";
     in
-    rec {
+    {
       aarch64-darwin = {
         inherit sha256;
         url = "${base}/arm64/OrbStack_v${version}_arm64.dmg";
       };
-      x86_64-darwin = aarch64-darwin // {
-        url = "TODO";
+      x86_64-darwin = {
+        inherit sha256;
+        url = "${base}/amd64/OrbStack_v${version}_amd64.dmg";
       };
     };
 
@@ -45,7 +46,10 @@ let
   meta = with lib; {
     description = "Run Docker and Linux on your Mac seamlessly and efficiently.";
     homepage = "https://orbstack.dev/";
-    platforms = [ "aarch64-darwin" ];
+    platforms = [
+      "aarch64-darwin"
+      "x86_64-darwin"
+    ];
   };
 
   appname = "OrbStack";

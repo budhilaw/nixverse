@@ -2,17 +2,17 @@
 
 let
   pname = "cursor";
-  version = "0.49.5";
-  sha = "fd861c8a80c0f9e4e35294b1915ee8a7b29ae858";
-  
+  version = "2.6.18";
+  sha = "68fbec5aed9da587d1c6a64172792f505bafa252";
+
   sources = {
     aarch64-darwin = fetchurl {
       url = "https://downloads.cursor.com/production/${sha}/darwin/arm64/Cursor-darwin-arm64.zip";
-      sha256 = "sha256-JmHExzxq1/gKZmftzSbdRre8aRRvavWiJVIAIpyOs/0==";
+      sha256 = "sha256-7alxe3q6vl73FMZ1UT5kuGhrfH2+Hksx0EzWVRBPtVI=";
     };
     x86_64-darwin = fetchurl {
       url = "https://downloads.cursor.com/production/${sha}/darwin/x64/Cursor-darwin-x64.zip";
-      sha256 = "426280a045700f1b633749bcf81ddd49e78b64d194e9e5589d28fa1c0ad4ab83";
+      sha256 = "sha256-Jo5I3JoQR6r/+U3LH4lmKx0J87PmL5wAeGcxnKc35ec=";
     };
   };
 in
