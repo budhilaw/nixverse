@@ -13,6 +13,9 @@
   system.stateVersion = 4;
   nixpkgs.hostPlatform = "aarch64-darwin";
 
+  # Suppress "options.json without proper context" warning from nix-darwin docs generation
+  documentation.enable = false;
+
   # Set primary user for nix-darwin options that require it
   system.primaryUser = "budhilaw";
 
