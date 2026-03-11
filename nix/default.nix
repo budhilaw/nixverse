@@ -40,6 +40,14 @@
       ];
     };
 
+    users.ericssonbudhilaw = rec {
+      username = "ericssonbudhilaw";
+      gh.url = "https://github.com/budhilaw";
+      keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDlZ2nm/I+pgwdJGpFzlN4HcQ19VCidrHx5QypgZVehe ericsson@budhilaw.com"
+      ];
+    };
+
     # --- shareable nixpkgs configurations
     nixpkgs = {
       config = {
@@ -70,6 +78,7 @@
     darwin.configurationsDirectory = ./configurations/darwin;
     darwin.hosts = {
       budhilaw.userHomeModules = [ "budhilaw" ];
+      "NB-EricssonBudhilaw-Tech".userHomeModules = [ "ericssonbudhilaw" ];
     };
     
     # Add NixOS configuration
