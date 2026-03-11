@@ -28,7 +28,7 @@
       # sops.defaultSopsFile = "${inputs.self}/secrets/secret.yaml";
       # sops.secrets.openai_api_key.path = "%r/openai_api_key";
       # sops.secrets.codeium.path = "%r/codeium";
-      programs.git.extraConfig.diff.sopsdiffer.textconv = "sops -d --config /dev/null";
+      programs.git.settings.diff.sopsdiffer.textconv = "sops -d --config /dev/null";
       home.packages = [ pkgs.sops ];
     }
     # --- secrets

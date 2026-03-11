@@ -13,7 +13,7 @@ in
   environment.shellInit =
     mkIf brewEnabled # bash
       ''
-        eval "$(${config.homebrew.brewPrefix}/brew shellenv)"
+        eval "$(${config.homebrew.prefix}/bin/brew shellenv)"
       '';
 
   # Note: Homebrew installation is now handled automatically by nix-darwin
