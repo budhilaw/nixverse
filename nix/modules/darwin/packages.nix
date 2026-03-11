@@ -14,9 +14,7 @@
     terminal-notifier
   ]);
 
-  # Fonts
   fonts.packages = with pkgs; [
-    sketchybar-app-font
 
     nerd-fonts.jetbrains-mono
     nerd-fonts.fira-code

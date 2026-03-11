@@ -24,7 +24,6 @@
         stylua.enable = true;
         luacheck.enable = false;
         deadnix.enable = true;
-        deadnix.excludes = [ "nix/overlays/nodePackages/node2nix" ];
         nixfmt-rfc-style.enable = true;
         dune-fmt.enable = true;
         dune-fmt.settings.extraRuntimeInputs = [ pkgs.ocamlPackages.ocamlformat ];
@@ -63,15 +62,13 @@
             name:
             let
               node = pkgs.${name};
-              corepackShim = pkgs.nodeCorepackShims.overrideAttrs (_: {
-                buildInputs = [ node ];
-              });
             in
             pkgs.mkShell {
               description = "${name} Development Environment";
               buildInputs = [
                 node
-                corepackShim
+                pkgs.yarn
+                pkgs.pnpm
               ];
             };
 
@@ -215,9 +212,8 @@
             description = "Node.js LTS Development Environment";
             nativeBuildInputs = with pkgs; [
               nodejs_24
-              nodePackages.npm
-              nodePackages.yarn
-              nodePackages.pnpm
+              yarn
+              pnpm
             ];
             shellHook = ''
               echo "Node.js LTS Development Environment"

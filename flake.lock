@@ -487,7 +487,6 @@
         "pre-commit-hooks": "pre-commit-hooks",
         "process-compose-flake": "process-compose-flake",
         "services-flake": "services-flake",
-        "sketchybar-app-font": "sketchybar-app-font",
         "sops-nix": "sops-nix",
         "vscode-server": "vscode-server"
       }
@@ -504,22 +503,6 @@
       "original": {
         "owner": "juspay",
         "repo": "services-flake",
-        "type": "github"
-      }
-    },
-    "sketchybar-app-font": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1754473150,
-        "narHash": "sha256-2n/a7jpUMkRn2whhyoPb9NqFTxYTiev23Qiw1n8S9rM=",
-        "owner": "kvndrsslr",
-        "repo": "sketchybar-app-font",
-        "rev": "865305411b404fd006d4d72056c56e04d2a0ba36",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kvndrsslr",
-        "repo": "sketchybar-app-font",
         "type": "github"
       }
     },
