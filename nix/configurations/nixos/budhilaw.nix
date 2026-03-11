@@ -16,7 +16,7 @@
   ];
 
   # Set the system state version
-  system.stateVersion = "25.05";
+  system.stateVersion = "25.11";
   
   # Set the platform to x86_64-linux
   nixpkgs.hostPlatform = "x86_64-linux";

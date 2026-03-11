@@ -10,7 +10,7 @@
 {
   home = rec {
     username = "budhilaw";
-    stateVersion = "25.05";
+    stateVersion = "25.11";
     homeDirectory = osConfig.users.users.${username}.home;
     # sessionVariables.EDITOR = lib.getExe' inputs.self.packages.${pkgs.stdenv.system}.nvim "nvim";
   };
