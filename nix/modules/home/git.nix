@@ -20,7 +20,7 @@ in
       ".DS_Store"
     ];
 
-    extraConfig = {
+    settings = {
       gpg = {
         program = "${pkgs.gnupg}/bin/gpg2";
       };

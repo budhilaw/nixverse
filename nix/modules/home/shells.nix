@@ -127,7 +127,7 @@ let
       lla = "ls -la";
       lt = "ls --tree";
       cat = "${pkgs.bat}/bin/bat";
-      du = "${pkgs.du-dust}/bin/dust";
+      du = "${pkgs.dust}/bin/dust";
 
       # Git
       g = "git";
