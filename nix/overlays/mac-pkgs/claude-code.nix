@@ -2,64 +2,51 @@
   lib,
   stdenv,
   fetchurl,
-  nodejs_20,
-  makeWrapper,
 }:
 
 let
+  inherit (stdenv.hostPlatform) system;
+  throwSystem = throw "Unsupported system: ${system}";
+
   pname = "claude-code";
   version = "2.1.72";
 
-  src = fetchurl {
-    url = "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-${version}.tgz";
-    hash = "sha512-GhoUURM5xUPL+DSn0jMPXDEkWvocl5lqCs/wnyYDUliY0fBlXm7LxWnjLCBPZ0LoeUnr2e6MFRBxyUFrgrRp0A==";
+  base = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases";
+
+  srcs = {
+    aarch64-darwin = fetchurl {
+      url = "${base}/${version}/darwin-arm64/claude";
+      sha256 = "sha256-xYT1E2LVYmlbxxdQ0cIZb5oODjb9BD4rxoPM/Jo6s9c=";
+    };
+    x86_64-darwin = fetchurl {
+      url = "${base}/${version}/darwin-x64/claude";
+      sha256 = "sha256-JLn6GD5CJmQPCiFY53cCsN2GDZIFsb7H5pVgmjCciYY=";
+    };
   };
+
+  src = srcs.${system} or throwSystem;
 in
 
 stdenv.mkDerivation {
   inherit pname version src;
-  
-  nativeBuildInputs = [ nodejs_20 makeWrapper ];
-  
-  buildPhase = ''
-    runHook preBuild
-    
-    export HOME=$TMPDIR
-    tar -xf $src
-    cd package
-    
-    # Create the node_modules directory structure
-    mkdir -p $out/lib/node_modules/@anthropic-ai/claude-code
-    cp -r . $out/lib/node_modules/@anthropic-ai/claude-code/
-    
-    # Make the CLI script executable
-    chmod +x $out/lib/node_modules/@anthropic-ai/claude-code/cli.js
-    
-    runHook postBuild
-  '';
-  
+
+  dontUnpack = true;
+  dontBuild = true;
+
   installPhase = ''
     runHook preInstall
-    
     mkdir -p $out/bin
-    
-    # Create a wrapper script for the CLI
-    # The package doesn't have a bin/claude binary, but a cli.js file at the root
-    # We create a wrapper that runs: node cli.js
-    makeWrapper ${nodejs_20}/bin/node $out/bin/claude \
-      --add-flags "$out/lib/node_modules/@anthropic-ai/claude-code/cli.js" \
-      --set DISABLE_AUTOUPDATER 1 \
-      --set NODE_PATH $out/lib/node_modules
-    
+    cp $src $out/bin/claude
+    chmod +x $out/bin/claude
     runHook postInstall
   '';
-  
+
   meta = {
     description = "An agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster";
-    homepage = "https://github.com/anthropics/claude-code";
-    downloadPage = "https://www.npmjs.com/package/@anthropic-ai/claude-code";
+    homepage = "https://www.anthropic.com/claude-code";
     license = lib.licenses.unfree;
-    maintainers = with lib.maintainers; [ ];
+    platforms = [ "aarch64-darwin" "x86_64-darwin" ];
     mainProgram = "claude";
+    sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
   };
-} 
+}
