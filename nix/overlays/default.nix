@@ -29,13 +29,7 @@
 
     nixfmt = prev.nixfmt-rfc-style;
 
-    # atuin 18.4.0 has a broken test (atuin_server crate resolution)
-    # in nixpkgs-unstable — skip tests until upstream fixes it
-    atuin = prev.atuin.overrideAttrs (_: {
-      doCheck = false;
-    });
-
-    fishPlugins = prev.fishPlugins // {
+fishPlugins = prev.fishPlugins // {
       nix-env = {
         name = "nix-env";
         src = inputs.nix-env;

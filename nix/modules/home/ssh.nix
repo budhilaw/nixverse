@@ -47,8 +47,13 @@ in
   config = mkIf cfg.enable {
     programs.ssh = {
       enable = true;
-      addKeysToAgent = "yes";
-      extraConfig = "UseKeychain yes";
+      enableDefaultConfig = false;
+      matchBlocks."*" = {
+        addKeysToAgent = "yes";
+        extraOptions = {
+          UseKeychain = "yes";
+        };
+      };
     };
 
     # Place public keys as plain files (not secrets — safe in git)
@@ -61,6 +66,7 @@ in
     sops.secrets = mkIf (cfg.sopsFile != null) (
       listToAttrs (
         map (name: nameValuePair "ssh_${name}" {
+          key = name;
           path = "${config.home.homeDirectory}/.ssh/${name}";
           mode = "0600";
           sopsFile = cfg.sopsFile;

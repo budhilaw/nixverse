@@ -177,26 +177,12 @@ in
     # Shell history replacement
     # in MacOS type `Ctrl+R` to search history
     atuin.enable = true;
-    atuin.package = pkgs.atuin.overrideAttrs (d: rec {
-      version = "18.4.0";
-      src = pkgs.fetchFromGitHub {
-        owner = "atuinsh";
-        repo = "atuin";
-        rev = "v${version}";
-        hash = "sha256-P/q4XYhpXo9kwiltA0F+rQNSlqI+s8TSi5v5lFJWJ/4=";
-      };
-      cargoDeps = d.cargoDeps.overrideAttrs (_: {
-        name = "atuin-${version}-vendor.tar.gz";
-        inherit src;
-        outputHash = "sha256-mrsqaqJHMyNi3yFDIyAXFBS+LY71VWXE8O7mjvgI6lo=";
-      });
-    });
     atuin.enableFishIntegration = config.programs.fish.enable;
     atuin.enableBashIntegration = config.programs.bash.enable;
 
     # command-not-found integration
-    nix-index.enableFishIntegration = config.programs.fish.enable;
-    nix-index.enableBashIntegration = config.programs.bash.enable;
+    nix-index.enableFishIntegration = false;
+    nix-index.enableBashIntegration = false;
 
     # jump like `z` or `fasd`
     zoxide.enable = true;
@@ -256,6 +242,13 @@ in
       };
 
       interactiveShellInit = ''
+        # PATH
+        fish_add_path -g ~/.local/bin
+
+        # Locale
+        set -gx LANG en_US.UTF-8
+        set -gx LC_ALL en_US.UTF-8
+
         # Fish color
         set -U fish_color_command 6CB6EB --bold
         set -U fish_color_redirection DEB974

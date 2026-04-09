@@ -2,16 +2,7 @@
 {
   flake.overlays.macos =
     final: prev:
-    let
-      inherit (prev.lib) attrsets;
-      callPackage = prev.newScope { };
-      packages = [
-        "claude-code"
-      ];
-    in
-
-    attrsets.genAttrs packages (name: callPackage ./${name}.nix { })
-    // {
+    {
       sbar_menus = prev.callPackage "${self}/nix/packages/sketchybar/helpers/menus" { };
       sbar_events = prev.callPackage "${self}/nix/packages/sketchybar/helpers/event_providers" { };
       sbarLua = prev.callPackage "${self}/nix/packages/sketchybar/helpers/sbar.nix" { };

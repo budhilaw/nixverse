@@ -18,7 +18,7 @@
   within = {
     gpg = {
       enable = true;
-      sopsFile = ../../../secrets/budhilaw-gpg.yaml;
+      sopsFile = "${inputs.self}/secrets/budhilaw-gpg.yaml";
       privateKeys = [ "gpg_private_key" ];
       trustKeyIds = [ "0xBD838B746BAA8C5F" ];
     };
@@ -26,7 +26,7 @@
   };
 
   within.ssh = {
-    sopsFile = ../../../secrets/budhilaw-ssh.yaml;
+    sopsFile = "${inputs.self}/secrets/budhilaw-ssh.yaml";
     privateKeys = [
       "id_ed25519_personal"
       "id_ed25519_hosthatch"
@@ -47,6 +47,9 @@
 };
 
   imports = lib.attrValues ezModules ++ [
+    # --- nix-index pre-built database
+    inputs.nix-index-database.homeModules.nix-index
+
     # --- secrets (SOPS with age key — key stored in 1Password)
     inputs.sops-nix.homeManagerModules.sops
     {

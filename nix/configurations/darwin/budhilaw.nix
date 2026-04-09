@@ -24,6 +24,75 @@
     shell = pkgs.fish;
   };
 
+  # Set fish as default shell for budhilaw
+  system.activationScripts.postActivation.text = ''
+    # Change default shell to fish if not already set
+    currentShell=$(dscl . -read /Users/budhilaw UserShell | awk '{print $2}')
+    fishPath="/run/current-system/sw/bin/fish"
+    if [ "$currentShell" != "$fishPath" ]; then
+      chsh -s "$fishPath" budhilaw
+    fi
+
+    # Configure iTerm2 default profile
+    itermPlist="/Users/budhilaw/Library/Preferences/com.googlecode.iterm2.plist"
+    if [ -f "$itermPlist" ]; then
+      sudo -u budhilaw defaults write com.googlecode.iterm2 "ShowMarkIndicators" -bool false
+      sudo -u budhilaw defaults write com.googlecode.iterm2 "HideScrollbar" -bool true
+      sudo -u budhilaw defaults write com.googlecode.iterm2 "TerminalMargin" -int 10
+      sudo -u budhilaw defaults write com.googlecode.iterm2 "TerminalVMargin" -int 10
+      sudo -u budhilaw defaults write com.googlecode.iterm2 "ClickToSelectCommand" -int 0
+      # Window: 110x35, No Title Bar (12), transparency + blur
+      /usr/libexec/PlistBuddy \
+        -c "Set ':New Bookmarks:0:Columns' 110" \
+        -c "Set ':New Bookmarks:0:Rows' 35" \
+        -c "Set ':New Bookmarks:0:Character Encoding' 4" \
+        -c "Set ':New Bookmarks:0:Normal Font' 'CaskaydiaMonoNF-Regular 14'" \
+        -c "Set ':New Bookmarks:0:Non Ascii Font' 'CaskaydiaMonoNF-Regular 14'" \
+        -c "Set ':New Bookmarks:0:Window Type' 12" \
+        -c "Set ':New Bookmarks:0:Transparency' 0.15" \
+        -c "Set ':New Bookmarks:0:Blur' 1" \
+        -c "Set ':New Bookmarks:0:Blur Radius' 5" \
+        "$itermPlist" 2>/dev/null || true
+      # Locale
+      /usr/libexec/PlistBuddy -c "Delete ':New Bookmarks:0:Set Local Environment Vars'" "$itermPlist" 2>/dev/null || true
+      /usr/libexec/PlistBuddy -c "Add ':New Bookmarks:0:Set Local Environment Vars' integer 2" "$itermPlist"
+      /usr/libexec/PlistBuddy -c "Delete ':New Bookmarks:0:Custom Locale'" "$itermPlist" 2>/dev/null || true
+      /usr/libexec/PlistBuddy -c "Add ':New Bookmarks:0:Custom Locale' string 'en_US.UTF-8'" "$itermPlist"
+      # Disable mark indicators per-profile
+      /usr/libexec/PlistBuddy -c "Delete ':New Bookmarks:0:Show Mark Indicators'" "$itermPlist" 2>/dev/null || true
+      /usr/libexec/PlistBuddy -c "Add ':New Bookmarks:0:Show Mark Indicators' bool false" "$itermPlist"
+      # Natural Text Editing keybindings
+      /usr/libexec/PlistBuddy -c "Delete ':New Bookmarks:0:Keyboard Map'" "$itermPlist" 2>/dev/null || true
+      /usr/libexec/PlistBuddy \
+        -c "Add ':New Bookmarks:0:Keyboard Map' dict" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0x7f-0x80000' dict" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0x7f-0x80000:Action' integer 11" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0x7f-0x80000:Text' string '0x1b 0x7f'" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0x7f-0x100000' dict" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0x7f-0x100000:Action' integer 11" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0x7f-0x100000:Text' string '0x15'" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf702-0x280000' dict" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf702-0x280000:Action' integer 10" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf702-0x280000:Text' string 'b'" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf702-0x300000' dict" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf702-0x300000:Action' integer 11" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf702-0x300000:Text' string '0x1'" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf703-0x280000' dict" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf703-0x280000:Action' integer 10" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf703-0x280000:Text' string 'f'" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf703-0x300000' dict" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf703-0x300000:Action' integer 11" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf703-0x300000:Text' string '0x5'" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf728-0x0' dict" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf728-0x0:Action' integer 11" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf728-0x0:Text' string '0x4'" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf728-0x80000' dict" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf728-0x80000:Action' integer 10" \
+        -c "Add ':New Bookmarks:0:Keyboard Map:0xf728-0x80000:Text' string 'd'" \
+        "$itermPlist"
+    fi
+  '';
+
   users.users._dnscrypt-proxy.home = lib.mkForce "/private/var/lib/dnscrypt-proxy";
 
   # --- see: nix/nixosModules/nix.nix
@@ -33,6 +102,12 @@
   #   use = "full";
   #   inputs-to-registry = true;
   # };
+
+  # Set system locale
+  environment.variables = {
+    LANG = "en_US.UTF-8";
+    LC_ALL = "en_US.UTF-8";
+  };
 
   nix.enable = false;
 
@@ -119,14 +194,13 @@
     mru-spaces = false;
     # Configure apps that should appear in the Dock
     persistent-apps = [
-      # System apps 
-      { app = "/System/Applications/Launchpad.app"; }
+      { app = "/System/Applications/Apps.app"; }
       { app = "/Applications/Brave Browser.app"; }
       { app = "/System/Applications/Calendar.app"; }
       { app = "/System/Applications/Messages.app"; }
       { app = "/System/Applications/Mail.app"; }
       { app = "/System/Applications/Music.app"; }
-      { app = "/Applications/iTerm2.app"; }
+      { app = "/Applications/iTerm.app"; }
       { app = "/Applications/Cursor.app"; }
       { app = "/Applications/WhatsApp.app"; }
       { app = "/System/Applications/System Settings.app"; }

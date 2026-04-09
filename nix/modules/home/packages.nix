@@ -4,7 +4,7 @@
   # Packages with configuration --------------------------------------------------------------- {{{
   programs.home-manager.enable = true;
 
-  programs.nix-index.enable = true;
+  programs.nix-index.enable = false;
 
   # Bat, a substitute for cat.
   # https://github.com/sharkdp/bat
@@ -55,7 +55,6 @@
       kubectl
       (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
       docker
-      claude-code
       mkcert
       vscode
 

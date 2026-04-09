@@ -80,6 +80,9 @@ in
 
     # research
     "mendeley-reference-manager"
+
+    # fonts
+    "font-caskaydia-mono-nerd-font"
   ];
 
 }
