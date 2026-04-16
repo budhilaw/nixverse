@@ -47,7 +47,7 @@
       fastfetch
       git
 
-      ################################## 
+      ##################################
       # Development
       ##################################
       pkg-config
@@ -77,6 +77,7 @@
     ++ lib.optionals stdenv.isDarwin [
       mas
       m-cli # useful macOS CLI commands
+      ntfs3g
       pinentry-curses
       pinentry_mac
 

@@ -266,6 +266,63 @@
           #    $ nix develop github:budhilaw/nixverse#phpdev
           #
           #
+          #
+          #    Go service — Go 1.25 backend with gRPC tooling
+          #    $ nix develop ~/.config/nixverse#goService
+          #
+          goService = pkgs.mkShell {
+            description = "Go 1.25 service (gRPC + linters)";
+            nativeBuildInputs = with pkgs; [
+              go_1_25
+              gopls
+              go-tools
+              branches.master.golangci-lint
+              protobuf
+              protoc-gen-go
+              protoc-gen-go-grpc
+            ];
+            shellHook = ''
+              export GOBIN="$PWD/bin"
+              export GOPATH="$(${pkgs.go_1_25}/bin/go env GOPATH)"
+              export PATH="$GOBIN:$GOPATH/bin:$PATH"
+            '';
+          };
+
+          #
+          #    Go agent — Go 1.23 binary with gRPC, no DB
+          #    $ nix develop ~/.config/nixverse#goAgent
+          #
+          goAgent = pkgs.mkShell {
+            description = "Go 1.23 agent/binary (gRPC, no DB)";
+            nativeBuildInputs = with pkgs; [
+              go_1_23
+              gopls
+              go-tools
+              branches.master.golangci-lint
+              protobuf
+              protoc-gen-go
+              protoc-gen-go-grpc
+            ];
+            shellHook = ''
+              export GOBIN="$PWD/bin"
+              export GOPATH="$(${pkgs.go_1_23}/bin/go env GOPATH)"
+              export PATH="$GOBIN:$GOPATH/bin:$PATH"
+            '';
+          };
+
+          #
+          #    Web app — Node 24 + yarn + pnpm for SPA / Vite / Next
+          #    $ nix develop ~/.config/nixverse#webApp
+          #
+          webApp = pkgs.mkShell {
+            description = "Node.js 24 web app (yarn + pnpm)";
+            nativeBuildInputs = with pkgs.branches.stable; [
+              nodejs_24
+              yarn
+              pnpm
+            ];
+          };
+
           phpdev = pkgs.mkShell {
             description = "PHP Development Environment for Laravel & WordPress";
             nativeBuildInputs = with pkgs; [

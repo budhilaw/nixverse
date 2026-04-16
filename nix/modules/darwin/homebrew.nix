@@ -64,19 +64,18 @@ in
     # android development
     "android-file-transfer"
 
-    # vpn
-    "cloudflare-warp"
-
     # communication
     "slack"
     "zoom"
 
     # developer tools
+    "antigravity"
     "cursor"
     "dbeaver-community"
     "iterm2"
     "orbstack"
     "postman"
+    "claude"
 
     # research
     "mendeley-reference-manager"

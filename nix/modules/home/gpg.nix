@@ -14,21 +14,17 @@ in
   options.within.gpg = {
     enable = mkEnableOption "GPG configuration";
 
-    sopsFile = mkOption {
-      type = types.nullOr types.path;
-      default = null;
-      description = ''
-        Path to the SOPS-encrypted YAML file containing GPG private key(s).
-        The file should have keys named like "gpg_private_key" containing
-        the ASCII-armored private key export.
-      '';
-    };
-
     privateKeys = mkOption {
-      type = types.listOf types.str;
-      default = [ "gpg_private_key" ];
+      type = types.attrsOf types.path;
+      default = {};
+      example = literalExpression ''
+        {
+          gpg_personal_key = ''${inputs.self}/secrets/budhilaw-gpg.yaml;
+          gpg_amartha_key  = ''${inputs.self}/secrets/amartha-gpg.yaml;
+        }
+      '';
       description = ''
-        Names of GPG private key entries in the sopsFile.
+        Map of GPG key entry name → SOPS-encrypted YAML file containing it.
         Each entry will be decrypted and auto-imported into the GPG keyring.
       '';
     };
@@ -77,19 +73,15 @@ in
       GPG_TTY = "$(tty)";
     };
 
-    # Decrypt GPG private keys via sops-nix
-    sops.secrets = mkIf (cfg.sopsFile != null) (
-      listToAttrs (
-        map (name: nameValuePair name {
-          sopsFile = cfg.sopsFile;
-          path = "${config.home.homeDirectory}/.local/share/sops-gpg/${name}.asc";
-          mode = "0600";
-        }) cfg.privateKeys
-      )
-    );
+    # Decrypt GPG private keys via sops-nix (each key may live in its own file)
+    sops.secrets = mapAttrs' (name: sopsFile: nameValuePair name {
+      inherit sopsFile;
+      path = "${config.home.homeDirectory}/.local/share/sops-gpg/${name}.asc";
+      mode = "0600";
+    }) cfg.privateKeys;
 
     # Auto-import GPG keys and set trust after sops-nix decrypts them
-    home.activation.importGpgKeys = mkIf (cfg.sopsFile != null) (
+    home.activation.importGpgKeys = mkIf (cfg.privateKeys != {}) (
       lib.hm.dag.entryAfter [ "sopsNix" ] ''
         export GNUPGHOME="${config.home.homeDirectory}/.gnupg"
 
@@ -101,11 +93,16 @@ in
               ${pkgs.gnupg}/bin/gpg --batch --import "${keyPath}" 2>/dev/null || true
             fi
           ''
-        ) cfg.privateKeys}
+        ) (attrNames cfg.privateKeys)}
 
-        # Set ultimate trust for specified key IDs
+        # Set ultimate trust. --import-ownertrust needs full fingerprints,
+        # so resolve short key IDs (0x...) to fingerprints via --with-colons.
         ${concatMapStringsSep "\n" (keyId: ''
-          echo "${keyId}:6:" | ${pkgs.gnupg}/bin/gpg --import-ownertrust 2>/dev/null || true
+          fpr=$(${pkgs.gnupg}/bin/gpg --with-colons --fingerprint "${keyId}" 2>/dev/null \
+                  | ${pkgs.gawk}/bin/awk -F: '/^fpr:/ { print $10; exit }')
+          if [ -n "$fpr" ]; then
+            echo "$fpr:6:" | ${pkgs.gnupg}/bin/gpg --import-ownertrust 2>/dev/null || true
+          fi
         '') cfg.trustKeyIds}
       ''
     );

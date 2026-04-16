@@ -55,12 +55,12 @@
         "$itermPlist" 2>/dev/null || true
       # Locale
       /usr/libexec/PlistBuddy -c "Delete ':New Bookmarks:0:Set Local Environment Vars'" "$itermPlist" 2>/dev/null || true
-      /usr/libexec/PlistBuddy -c "Add ':New Bookmarks:0:Set Local Environment Vars' integer 2" "$itermPlist"
+      /usr/libexec/PlistBuddy -c "Add ':New Bookmarks:0:Set Local Environment Vars' integer 2" "$itermPlist" 2>/dev/null || true
       /usr/libexec/PlistBuddy -c "Delete ':New Bookmarks:0:Custom Locale'" "$itermPlist" 2>/dev/null || true
-      /usr/libexec/PlistBuddy -c "Add ':New Bookmarks:0:Custom Locale' string 'en_US.UTF-8'" "$itermPlist"
+      /usr/libexec/PlistBuddy -c "Add ':New Bookmarks:0:Custom Locale' string 'en_US.UTF-8'" "$itermPlist" 2>/dev/null || true
       # Disable mark indicators per-profile
       /usr/libexec/PlistBuddy -c "Delete ':New Bookmarks:0:Show Mark Indicators'" "$itermPlist" 2>/dev/null || true
-      /usr/libexec/PlistBuddy -c "Add ':New Bookmarks:0:Show Mark Indicators' bool false" "$itermPlist"
+      /usr/libexec/PlistBuddy -c "Add ':New Bookmarks:0:Show Mark Indicators' bool false" "$itermPlist" 2>/dev/null || true
       # Natural Text Editing keybindings
       /usr/libexec/PlistBuddy -c "Delete ':New Bookmarks:0:Keyboard Map'" "$itermPlist" 2>/dev/null || true
       /usr/libexec/PlistBuddy \
@@ -89,8 +89,21 @@
         -c "Add ':New Bookmarks:0:Keyboard Map:0xf728-0x80000' dict" \
         -c "Add ':New Bookmarks:0:Keyboard Map:0xf728-0x80000:Action' integer 10" \
         -c "Add ':New Bookmarks:0:Keyboard Map:0xf728-0x80000:Text' string 'd'" \
-        "$itermPlist"
+        "$itermPlist" 2>/dev/null || true
     fi
+
+    # --- Brave browser: disable all bloatware
+    defaults write com.brave.Browser BraveRewardsDisabled -bool true
+    defaults write com.brave.Browser BraveWalletDisabled -bool true
+    defaults write com.brave.Browser BraveVPNDisabled -bool true
+    defaults write com.brave.Browser BraveAIChatEnabled -bool false
+    defaults write com.brave.Browser IPFSEnabled -bool false
+    defaults write com.brave.Browser TorDisabled -bool true
+    defaults write com.brave.Browser SidebarSearchEnabled -bool false
+    defaults write com.brave.Browser HideSidePanelButton -bool true
+    defaults write com.brave.Browser ShowFullUrlsInAddressBar -bool true
+    defaults write com.brave.Browser BraveNewsEnabled -bool false
+    defaults write com.brave.Browser BraveTalkEnabled -bool false
   '';
 
   users.users._dnscrypt-proxy.home = lib.mkForce "/private/var/lib/dnscrypt-proxy";
@@ -201,7 +214,6 @@
       { app = "/System/Applications/Mail.app"; }
       { app = "/System/Applications/Music.app"; }
       { app = "/Applications/iTerm.app"; }
-      { app = "/Applications/Cursor.app"; }
       { app = "/Applications/WhatsApp.app"; }
       { app = "/System/Applications/System Settings.app"; }
       { app = "/System/Applications/App Store.app"; }

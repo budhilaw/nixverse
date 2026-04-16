@@ -6,12 +6,18 @@ let
     email = "ericsson@budhilaw.com";
     signingKey = "0xBD838B746BAA8C5F";
   };
+  amartha = {
+    name = "Ericsson Budhilaw";
+    email = "ericsson.budhilaw@amartha.com";
+    signingKey = "0x32B604FD91055131";
+  };
 in
 {
   programs.git = {
     enable = true;
     ignores = [
       ".DS_Store"
+      ".direnv"
     ];
 
     settings = {
@@ -31,13 +37,16 @@ in
       };
       init.defaultBranch = "main";
       
-      # Multiple GitHub accounts configuration
+      # Multiple identities — selected by working directory
       includeIf = {
         "gitdir:~/.config/nixverse/" = {
           path = "~/.gitconfig-personal";
         };
         "gitdir:~/Dev/Personal/" = {
           path = "~/.gitconfig-personal";
+        };
+        "gitdir:~/Dev/Amartha/" = {
+          path = "~/.gitconfig-amartha";
         };
       };
     };
@@ -49,6 +58,14 @@ in
       name = ${budhilaw.name}
       email = ${budhilaw.email}
       signingKey = ${budhilaw.signingKey}
+  '';
+
+  # Config for Amartha account (active inside ~/Dev/Amartha/)
+  home.file.".gitconfig-amartha".text = ''
+    [user]
+      name = ${amartha.name}
+      email = ${amartha.email}
+      signingKey = ${amartha.signingKey}
   '';
 
   ### git tools
@@ -65,4 +82,13 @@ in
   };
 
   home.packages = [ pkgs.git-filter-repo ];
+
+  # Remove any rogue ~/.gitconfig that would override ~/.config/git/config.
+  # Git reads ~/.gitconfig last at user scope, so a stray file there silently
+  # overrides the nix-managed config (e.g. email set by GUI tools, iCloud sync).
+  home.activation.removeRogueGitconfig = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+    if [ -e "$HOME/.gitconfig" ] && [ ! -L "$HOME/.gitconfig" ]; then
+      rm -f "$HOME/.gitconfig"
+    fi
+  '';
 }
