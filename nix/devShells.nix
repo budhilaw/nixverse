@@ -285,6 +285,8 @@
               export GOBIN="$PWD/bin"
               export GOPATH="$(${pkgs.go_1_25}/bin/go env GOPATH)"
               export PATH="$GOBIN:$GOPATH/bin:$PATH"
+              git config --global --add url."git@bitbucket.org:".insteadOf "https://bitbucket.org/" 2>/dev/null || true
+              export GOPRIVATE=bitbucket.org/Amartha
             '';
           };
 
@@ -293,9 +295,9 @@
           #    $ nix develop ~/.config/nixverse#goAgent
           #
           goAgent = pkgs.mkShell {
-            description = "Go 1.23 agent/binary (gRPC, no DB)";
+            description = "Go 1.25 agent/binary (gRPC, no DB)";
             nativeBuildInputs = with pkgs; [
-              go_1_23
+              go_1_25
               gopls
               go-tools
               branches.master.golangci-lint
@@ -305,8 +307,10 @@
             ];
             shellHook = ''
               export GOBIN="$PWD/bin"
-              export GOPATH="$(${pkgs.go_1_23}/bin/go env GOPATH)"
+              export GOPATH="$(${pkgs.go_1_25}/bin/go env GOPATH)"
               export PATH="$GOBIN:$GOPATH/bin:$PATH"
+              git config --global --add url."git@bitbucket.org:".insteadOf "https://bitbucket.org/" 2>/dev/null || true
+              export GOPRIVATE=bitbucket.org/Amartha
             '';
           };
 

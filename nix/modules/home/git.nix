@@ -34,6 +34,9 @@ in
         "git@github.com:" = {
           insteadOf = "https://github.com/";
         };
+        "git@bitbucket.org:" = {
+          insteadOf = "https://bitbucket.org/";
+        };
       };
       init.defaultBranch = "main";
       

@@ -50,6 +50,8 @@ in
       enableDefaultConfig = false;
       matchBlocks."*" = {
         addKeysToAgent = "yes";
+        serverAliveInterval = 60;
+        serverAliveCountMax = 3;
         extraOptions = {
           UseKeychain = "yes";
         };
