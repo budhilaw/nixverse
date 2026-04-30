@@ -217,7 +217,11 @@
               nodejs_24
               yarn
               pnpm
-            ];
+            ] ++ (with pkgs; [
+              # node-gyp requires Python with distutils (removed in Python 3.12+)
+              (python3.withPackages (ps: [ ps.setuptools ]))
+              pkg-config
+            ]);
             shellHook = ''
               echo "Node.js LTS Development Environment"
               echo "Node.js version: $(node --version)"

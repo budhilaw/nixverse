@@ -47,6 +47,7 @@ in
     "raycast"
     "rectangle"
     "shottr"
+    "protonvpn"
 
     # chat
     "discord"

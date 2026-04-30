@@ -12,6 +12,9 @@
       nixt
       ;
 
+    # direnv 2.37.1 fish test is killed in the macOS Nix sandbox; skip checks.
+    direnv = prev.direnv.overrideAttrs (_: { doCheck = false; });
+
     branches =
       let
         pkgsFrom =
