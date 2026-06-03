@@ -237,32 +237,62 @@
           #
           #
           python = pkgs.mkShell {
-            description = "Python Development Environment";
+            description = "Python latest";
             nativeBuildInputs = with pkgs; [
               python3
+              uv
+              ruff
               python3Packages.pip
               python3Packages.virtualenv
               python3Packages.setuptools
               python3Packages.wheel
-              python3Packages.black
-              python3Packages.flake8
-              python3Packages.mypy
               python3Packages.pytest
               python3Packages.ipython
+              python3Packages.mypy
             ];
             shellHook = ''
-              echo "Python Development Environment"
-              echo "Python version: $(python --version)"
-              echo "Available tools: pip, virtualenv, black, flake8, mypy, pytest, ipython"
-              
-              # Create and activate virtual environment if it doesn't exist
-              if [ ! -d ".venv" ]; then
-                echo "Creating virtual environment..."
-                python -m venv .venv
-              fi
-              
-              echo "To activate virtual environment: source .venv/bin/activate"
+              echo "Python $(python --version | cut -d' ' -f2)"
+              echo "Tools: uv, ruff, pip, virtualenv, pytest, mypy, ipython"
             '';
+          };
+
+          python313 = pkgs.mkShell {
+            description = "Python 3.13";
+            nativeBuildInputs = with pkgs; [
+              python313
+              uv
+              ruff
+              python313Packages.pip
+              python313Packages.virtualenv
+              python313Packages.pytest
+              python313Packages.ipython
+            ];
+          };
+
+          python312 = pkgs.mkShell {
+            description = "Python 3.12";
+            nativeBuildInputs = with pkgs; [
+              python312
+              uv
+              ruff
+              python312Packages.pip
+              python312Packages.virtualenv
+              python312Packages.pytest
+              python312Packages.ipython
+            ];
+          };
+
+          python311 = pkgs.mkShell {
+            description = "Python 3.11";
+            nativeBuildInputs = with pkgs; [
+              python311
+              uv
+              ruff
+              python311Packages.pip
+              python311Packages.virtualenv
+              python311Packages.pytest
+              python311Packages.ipython
+            ];
           };
 
           #

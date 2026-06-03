@@ -22,6 +22,7 @@ in
   homebrew.enable = true;
   homebrew.brews = [
     "protobuf"
+    "kcat"
   ];
   homebrew.onActivation.cleanup = "zap";
   homebrew.global.brewfile = true;
@@ -39,6 +40,7 @@ in
 
     # browsers
     "brave-browser"
+    "google-chrome"
 
     # productivity
     "appcleaner"
@@ -48,6 +50,9 @@ in
     "rectangle"
     "shottr"
     "protonvpn"
+    "stats"
+    "qbittorrent"
+    "the-unarchiver"
 
     # chat
     "discord"
@@ -70,13 +75,14 @@ in
     "zoom"
 
     # developer tools
-    "antigravity"
     "cursor"
     "dbeaver-community"
     "iterm2"
+    "jetbrains-toolbox"
     "orbstack"
     "postman"
     "claude"
+    "codex"
 
     # research
     "mendeley-reference-manager"

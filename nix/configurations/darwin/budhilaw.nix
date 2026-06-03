@@ -144,6 +144,29 @@
     ];
   };
 
+  # Weekly Nix garbage collection.
+  # nix-darwin's nix.gc is inert here (nix.enable = false → Determinate Nix
+  # owns the daemon), so old darwin-system generations — and the app versions
+  # they pin (e.g. multiple VS Code builds) — pile up in /nix forever and
+  # linger as ghost entries in macOS "Open With". This launchd job reclaims
+  # them every Sunday at 03:00 using Determinate's own nix-collect-garbage.
+  launchd.daemons.nix-gc.serviceConfig = {
+    ProgramArguments = [
+      "/nix/var/nix/profiles/default/bin/nix-collect-garbage"
+      "--delete-older-than"
+      "30d"
+    ];
+    StartCalendarInterval = [
+      {
+        Weekday = 0;
+        Hour = 3;
+        Minute = 0;
+      }
+    ];
+    StandardOutPath = "/var/log/nix-gc.log";
+    StandardErrorPath = "/var/log/nix-gc.log";
+  };
+
   # --- nix-darwin
   homebrew.enable = true;
 
