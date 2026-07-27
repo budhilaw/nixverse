@@ -48,6 +48,12 @@
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
+    # Keeps Launch Services / Spotlight / Dock in sync with Nix-installed apps
+    # (stable trampolines) so old versions get unregistered on each rebuild
+    # instead of piling up as duplicate "Open With" entries.
+    mac-app-util.url = "github:hraban/mac-app-util";
+    mac-app-util.inputs.nixpkgs.follows = "nixpkgs";
+
     #### ---- Home
     home-manager.url = "github:nix-community/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";

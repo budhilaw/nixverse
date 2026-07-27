@@ -115,9 +115,6 @@ in
                 "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
               ];
             }
-            // (lib.optionalAttrs (pkgs.stdenv.isDarwin && pkgs.stdenv.isAarch64) {
-              extra-platforms = "x86_64-darwin aarch64-darwin";
-            })
           );
       }
       // (lib.optionalAttrs hasFull {

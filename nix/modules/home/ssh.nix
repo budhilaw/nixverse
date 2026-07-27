@@ -48,13 +48,11 @@ in
     programs.ssh = {
       enable = true;
       enableDefaultConfig = false;
-      matchBlocks."*" = {
-        addKeysToAgent = "yes";
-        serverAliveInterval = 60;
-        serverAliveCountMax = 3;
-        extraOptions = {
-          UseKeychain = "yes";
-        };
+      settings."*" = {
+        AddKeysToAgent = "yes";
+        ServerAliveInterval = 60;
+        ServerAliveCountMax = 3;
+        UseKeychain = "yes";
       };
     };
 

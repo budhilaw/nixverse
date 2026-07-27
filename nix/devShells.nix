@@ -361,6 +361,65 @@
             ];
           };
 
+          #
+          #    Sudutkelasku (carikelas) backend — Go + goose migrations + K6
+          #    $ nix develop ~/.config/nixverse#carikelas
+          #
+          carikelas = pkgs.mkShell {
+            description = "Sudutkelasku backend (Go + goose + K6)";
+            # NOTE: `pkgs.go` must be qualified. A bare `go` here would resolve
+            # to the `go` devShell defined in this same `rec { ... }` block
+            # (whose mkShell marker file then gets sourced and fails), not the
+            # Go toolchain.
+            nativeBuildInputs = [
+              pkgs.go
+              pkgs.gopls
+              # stable branch: on nixpkgs-weekly the bare `goose` attribute
+              # resolves to the AI agent, not the DB migration tool.
+              pkgs.branches.stable.goose
+              pkgs.branches.stable.k6
+            ];
+            shellHook = ''
+              export GOPATH="$(${pkgs.go}/bin/go env GOPATH)"
+              export PATH="$GOPATH/bin:$PATH"
+            '';
+          };
+
+          #
+          #    Sudutkelasku (carikelas) frontend — Node.js 24
+          #    $ nix develop ~/.config/nixverse#carikelasWeb
+          #
+          carikelasWeb = pkgs.mkShell {
+            description = "Sudutkelasku frontend (Node.js 24)";
+            nativeBuildInputs = with pkgs.branches.stable; [
+              nodejs_24
+              yarn
+              pnpm
+            ] ++ (with pkgs; [
+              (python3.withPackages (ps: [ ps.setuptools ]))
+              pkg-config
+            ]);
+          };
+
+          #
+          #    Java — JDK 17 + Maven (Flink jobs)
+          #    $ nix develop ~/.config/nixverse#java
+          #
+          java = pkgs.mkShell {
+            description = "Java 17 + Maven (Flink) Development Environment";
+            nativeBuildInputs = with pkgs; [
+              jdk17
+              maven
+            ];
+            shellHook = ''
+              export JAVA_HOME="${pkgs.jdk17.home}"
+              export PATH="$JAVA_HOME/bin:$PATH"
+              echo "Java Development Environment"
+              echo "Java version: $(java -version 2>&1 | head -n1)"
+              echo "Maven version: $(mvn -v 2>/dev/null | head -n1)"
+            '';
+          };
+
           phpdev = pkgs.mkShell {
             description = "PHP Development Environment for Laravel & WordPress";
             nativeBuildInputs = with pkgs; [

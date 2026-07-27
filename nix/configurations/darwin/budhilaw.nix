@@ -1,4 +1,5 @@
 {
+  inputs,
   lib,
   pkgs,
   ezModules,
@@ -8,13 +9,31 @@
 }:
 
 {
-  imports = lib.attrValues (ezModules // crossModules);
+  imports = lib.attrValues (ezModules // crossModules) ++ [
+    inputs.mac-app-util.darwinModules.default
+  ];
+
+  # Keep Launch Services in sync so home-manager / system app updates don't
+  # accumulate duplicate "Open With" entries for every past version. The
+  # home-manager module handles apps in "~/Applications/Home Manager Apps".
+  home-manager.sharedModules = [
+    inputs.mac-app-util.homeManagerModules.default
+  ];
 
   system.stateVersion = 4;
   nixpkgs.hostPlatform = "aarch64-darwin";
 
   # Suppress "options.json without proper context" warning from nix-darwin docs generation
   documentation.enable = false;
+
+  # Drop nix-darwin's own uninstaller from the system profile. It builds a
+  # SEPARATE throwaway darwin-system (pkgs/darwin-uninstaller) from nix-darwin's
+  # default config, where documentation.enable is true — so it tries to build
+  # darwin-manual-html and dies on `nixos-render-docs ... --toc-depth` (removed
+  # in current nixpkgs; our documentation.enable=false can't reach that sealed
+  # bootstrap config). We use Determinate Nix and never need this uninstaller;
+  # run it ad-hoc via `nix run nix-darwin#darwin-uninstaller` if ever required.
+  system.tools.darwin-uninstaller.enable = false;
 
   # Set primary user for nix-darwin options that require it
   system.primaryUser = "budhilaw";
@@ -238,6 +257,7 @@
       { app = "/System/Applications/Music.app"; }
       { app = "/Applications/iTerm.app"; }
       { app = "/Applications/WhatsApp.app"; }
+      { app = "/Applications/Bitwarden.app"; }
       { app = "/System/Applications/System Settings.app"; }
       { app = "/System/Applications/App Store.app"; }
     ];
