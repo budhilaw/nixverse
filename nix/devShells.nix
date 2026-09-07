@@ -402,6 +402,41 @@
           };
 
           #
+          #    budhilaw.com API — Go 1.25 + sqlc + goose + golangci-lint
+          #    $ nix develop ~/.config/nixverse#budhilaw
+          #
+          budhilaw = pkgs.mkShell {
+            description = "budhilaw.com API (Go 1.25 + sqlc + goose)";
+            nativeBuildInputs = [
+              pkgs.go_1_25
+              pkgs.gopls
+              pkgs.go-tools
+              pkgs.sqlc
+              # stable branch: on nixpkgs-weekly the bare `goose` attribute
+              # resolves to the AI agent, not the DB migration tool.
+              pkgs.branches.stable.goose
+              pkgs.branches.master.golangci-lint
+              pkgs.postgresql_16
+            ];
+            shellHook = ''
+              export GOPATH="$(${pkgs.go_1_25}/bin/go env GOPATH)"
+              export PATH="$GOPATH/bin:$PATH"
+            '';
+          };
+
+          #
+          #    budhilaw.com web — Node.js 24 + pnpm for Astro
+          #    $ nix develop ~/.config/nixverse#budhilawWeb
+          #
+          budhilawWeb = pkgs.mkShell {
+            description = "budhilaw.com web (Astro on Node.js 24)";
+            nativeBuildInputs = with pkgs.branches.stable; [
+              nodejs_24
+              pnpm
+            ];
+          };
+
+          #
           #    Java — JDK 17 + Maven (Flink jobs)
           #    $ nix develop ~/.config/nixverse#java
           #
