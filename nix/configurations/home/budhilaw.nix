@@ -1,45 +1,25 @@
+# Shared home-manager profile for budhilaw on every host. Host-specific parts
+# (private keys, GPG keys, dev-tool toggles) are set from the host config via
+# home-manager.users.budhilaw.
 {
-  inputs,
   lib,
   pkgs,
   ezModules,
   osConfig,
-  config,
   ...
 }:
 
 {
+  imports = lib.attrValues ezModules;
+
   home = rec {
     username = "budhilaw";
     stateVersion = "25.11";
     homeDirectory = osConfig.users.users.${username}.home;
   };
 
-  within = {
-    gpg = {
-      enable = true;
-      privateKeys = {
-        gpg_personal_key = "${inputs.self}/secrets/budhilaw-gpg.yaml";
-        gpg_amartha_key  = "${inputs.self}/secrets/amartha-gpg.yaml";
-      };
-      trustKeyIds = [
-        "0xBD838B746BAA8C5F"
-        "0x32B604FD91055131"
-      ];
-    };
-    ssh.enable = true;
-  };
-
   within.ssh = {
-    sopsFile = "${inputs.self}/secrets/budhilaw-ssh.yaml";
-    privateKeys = [
-      "id_ed25519_personal"
-      "id_ed25519_hosthatch"
-      "id_ed25519_hosthatch_deploy"
-      "id_ed25519_hosthatch_deploy_agent"
-      "id_ed25519_amartha"
-      "id_ed25519_cloudnan_deploy"
-    ];
+    enable = true;
     publicKeys = {
       id_ed25519_personal = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAVtM3ijBnlhJzKAttdc22AbJzHt0iTqB+A9t5LKrLrv ericsson@budhilaw.com";
       id_ed25519_amartha = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMbz/EiDGc02i6MGql1xxUS3GDSH6G+fFRmiVIoO2BMX ericsson.budhilaw@amartha.com";
@@ -51,78 +31,65 @@
   };
 
   programs.ssh.settings = {
-    # Homelab (Malang) — reached from anywhere via Cloudflare Tunnel + Access.
-    # cloudflared proxies the SSH stream to ssh.budhilaw.com; Access gates it
-    # behind an email OTP login. LAN IP 192.168.18.75 is unreachable off-site.
-    "homelab" = {
+    # Homelab over the tailnet — no browser OTP, works from anywhere enrolled.
+    homelab = {
+      HostName = "100.64.0.1";
+      User = "budhilaw";
+      IdentityFile = "~/.ssh/id_ed25519_personal";
+      IdentitiesOnly = true;
+    };
+    # Homelab through Cloudflare Access (email OTP) — fallback when not on the tailnet.
+    homelab-cf = {
       HostName = "ssh.budhilaw.com";
       User = "budhilaw";
       ProxyCommand = "${pkgs.cloudflared}/bin/cloudflared access ssh --hostname %h";
     };
     "github.com" = {
-      HostName = "github.com";
       User = "git";
       IdentityFile = "~/.ssh/id_ed25519_personal";
       IdentitiesOnly = true;
     };
     "bitbucket.org" = {
-      HostName = "bitbucket.org";
       User = "git";
       IdentityFile = "~/.ssh/id_ed25519_amartha";
       IdentitiesOnly = true;
     };
-    "hosthatch" = {
+    hosthatch = {
       HostName = "31.57.224.49";
       User = "kai";
       Port = 14048;
       IdentityFile = "~/.ssh/id_ed25519_hosthatch";
       IdentitiesOnly = true;
     };
-    "onidel" = {
+    onidel = {
       HostName = "104.250.122.107";
       User = "root";
       IdentityFile = "~/.ssh/id_ed25519_personal";
       IdentitiesOnly = true;
     };
-    "cloudnan-db" = {
+    cloudnan-db = {
       HostName = "165.245.184.200";
       User = "root";
       IdentityFile = "~/.ssh/id_ed25519_cloudnan_deploy";
       IdentitiesOnly = true;
     };
-    "cloudnan-grpc" = {
+    cloudnan-grpc = {
       HostName = "152.42.208.47";
       User = "root";
       IdentityFile = "~/.ssh/id_ed25519_cloudnan_deploy";
       IdentitiesOnly = true;
     };
-    "cloudnan-core" = {
+    cloudnan-core = {
       HostName = "168.144.36.205";
       User = "root";
       IdentityFile = "~/.ssh/id_ed25519_cloudnan_deploy";
       IdentitiesOnly = true;
     };
-    "cloudnan-runner" = {
+    cloudnan-runner = {
       HostName = "206.189.88.184";
       User = "root";
       IdentityFile = "~/.ssh/id_ed25519_cloudnan_deploy";
       IdentitiesOnly = true;
     };
   };
-
-  imports = lib.attrValues ezModules ++ [
-    # --- nix-index pre-built database
-    inputs.nix-index-database.homeModules.nix-index
-
-    # --- secrets (SOPS with age key — key stored in 1Password)
-    inputs.sops-nix.homeManagerModules.sops
-    {
-      # Age key location — place this file from 1Password on new machine
-      sops.age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
-
-      programs.git.settings.diff.sopsdiffer.textconv = "sops -d --config /dev/null";
-      home.packages = [ pkgs.sops pkgs.age ];
-    }
-    # --- secrets
-  ];
 }

@@ -1,7 +1,7 @@
 { pkgs, lib, ... }:
 
 let
-  budhilaw = {
+  personal = {
     name = "Ericsson Budhilaw";
     email = "ericsson@budhilaw.com";
     signingKey = "0xBD838B746BAA8C5F";
@@ -21,58 +21,30 @@ in
     ];
 
     settings = {
-      gpg = {
-        program = "${pkgs.gnupg}/bin/gpg2";
-      };
-      rerere.enable = true;
+      # Personal identity by default; work identity inside ~/Dev/Amartha/.
+      user = personal;
+      gpg.program = "${pkgs.gnupg}/bin/gpg2";
       commit.gpgSign = true;
+      rerere.enable = true;
       pull.ff = "only";
+      init.defaultBranch = "main";
       diff.tool = "code";
       difftool.prompt = false;
       merge.tool = "code";
       url = {
-        "git@github.com:" = {
-          insteadOf = "https://github.com/";
-        };
-        "git@bitbucket.org:" = {
-          insteadOf = "https://bitbucket.org/";
-        };
-      };
-      init.defaultBranch = "main";
-      
-      # Multiple identities — selected by working directory
-      includeIf = {
-        "gitdir:~/.config/nixverse/" = {
-          path = "~/.gitconfig-personal";
-        };
-        "gitdir:~/Dev/Personal/" = {
-          path = "~/.gitconfig-personal";
-        };
-        "gitdir:~/Dev/Amartha/" = {
-          path = "~/.gitconfig-amartha";
-        };
+        "git@github.com:".insteadOf = "https://github.com/";
+        "git@bitbucket.org:".insteadOf = "https://bitbucket.org/";
       };
     };
+
+    includes = [
+      {
+        condition = "gitdir:~/Dev/Amartha/";
+        contents.user = amartha;
+      }
+    ];
   };
 
-  # Config for personal account (default)
-  home.file.".gitconfig-personal".text = ''
-    [user]
-      name = ${budhilaw.name}
-      email = ${budhilaw.email}
-      signingKey = ${budhilaw.signingKey}
-  '';
-
-  # Config for Amartha account (active inside ~/Dev/Amartha/)
-  home.file.".gitconfig-amartha".text = ''
-    [user]
-      name = ${amartha.name}
-      email = ${amartha.email}
-      signingKey = ${amartha.signingKey}
-  '';
-
-  ### git tools
-  ## github cli
   programs.gh = {
     enable = true;
     settings = {
@@ -86,9 +58,8 @@ in
 
   home.packages = [ pkgs.git-filter-repo ];
 
-  # Remove any rogue ~/.gitconfig that would override ~/.config/git/config.
-  # Git reads ~/.gitconfig last at user scope, so a stray file there silently
-  # overrides the nix-managed config (e.g. email set by GUI tools, iCloud sync).
+  # Git reads ~/.gitconfig after ~/.config/git/config, so a stray file there
+  # (written by a GUI tool, synced by iCloud) silently overrides this config.
   home.activation.removeRogueGitconfig = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
     if [ -e "$HOME/.gitconfig" ] && [ ! -L "$HOME/.gitconfig" ]; then
       rm -f "$HOME/.gitconfig"

@@ -1,114 +1,79 @@
+# GUI apps and a few CLIs that are better served by Homebrew than by nixpkgs.
+{ config, lib, ... }:
+
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+  homebrew = {
+    enable = true;
+    global.brewfile = true;
+    onActivation.cleanup = "zap";
+    # Homebrew 5 requires --force-cleanup alongside --cleanup --zap.
+    onActivation.extraFlags = [ "--force-cleanup" ];
 
-let
-  inherit (lib) mkIf;
-  brewEnabled = config.homebrew.enable;
-in
-{
-  environment.shellInit =
-    mkIf brewEnabled # bash
-      ''
-        eval "$(${config.homebrew.prefix}/bin/brew shellenv)"
-      '';
+    brews = [
+      "protobuf"
+      "kcat"
+      "bitwarden-cli"
+      # Tailscale CLI + tailscaled. The formula (not the App Store app) because
+      # Headscale needs a custom --login-server. Enroll with:
+      #   sudo tailscaled install-system-daemon
+      #   sudo tailscale up --login-server https://headscale.budhilaw.com
+      "tailscale"
+    ];
 
-  # Note: Homebrew installation is now handled automatically by nix-darwin
-  # The preUserActivation script has been removed as it's deprecated
+    masApps = {
+      "Passepartout" = 1433648537;
+      "WhatsApp Messenger" = 310633997;
+      "Bitwarden" = 1352778147;
+    };
 
-  homebrew.enable = true;
-  homebrew.brews = [
-    "protobuf"
-    "kcat"
-    "bitwarden-cli"
-    # Tailscale CLI + tailscaled daemon. Using the formula (not the App Store
-    # app) because Headscale needs a custom --login-server, which the sandboxed
-    # GUI app makes awkward. Enroll: sudo tailscaled install-system-daemon then
-    # sudo tailscale up --login-server https://headscale.budhilaw.com
-    "tailscale"
-  ];
-  homebrew.onActivation.cleanup = "zap";
-  # Homebrew 5.x requires --cleanup to be paired with --force-cleanup (or
-  # --force / $HOMEBREW_ASK); nix-darwin only emits "--cleanup --zap", so
-  # activation aborts without this. See `brew bundle --help`.
-  homebrew.onActivation.extraFlags = [ "--force-cleanup" ];
-  homebrew.global.brewfile = true;
+    casks = [
+      # browsers
+      # brave-browser is pinned to 1.91.168 by hand (.pkg, auto-update off)
+      # because 1.91.171+ breaks Bitwarden inline autofill:
+      # https://github.com/brave/brave-browser/issues/56255
+      "brave-browser"
+      "google-chrome"
 
-  # Removed masApps as they keep reinstalling on every rebuild
-  homebrew.masApps = {
-    "Passepartout" = 1433648537;
-    "WhatsApp Messenger" = 310633997;
-    "Bitwarden" = 1352778147;
+      # productivity
+      "appcleaner"
+      "thaw@beta"
+      "raycast"
+      "rectangle"
+      "shottr"
+      "protonvpn"
+      "qbittorrent"
+      "the-unarchiver"
+      "cap"
+
+      # chat
+      "discord"
+      "telegram"
+      "slack"
+      "zoom"
+
+      # media
+      "iina"
+      "moonlight"
+      "mounty"
+      "obs"
+
+      # android
+      "android-file-transfer"
+
+      # developer tools
+      "dbeaver-community"
+      "iterm2"
+      "orbstack"
+      "postman"
+      "claude"
+      "codex"
+
+      # fonts
+      "font-caskaydia-mono-nerd-font"
+    ];
   };
 
-  homebrew.casks = [
-    # password managers
-    # "1password"
-    # "1password-cli"
-    # "bitwarden"
-    "steam"
-
-    # browsers
-    # brave-browser pinned to 1.91.168 manually (installed via .pkg, auto-update
-    # blocked) because 1.91.171+ breaks Bitwarden inline autofill — see
-    # https://github.com/brave/brave-browser/issues/56255. Re-enable once fixed.
-    "brave-browser"
-    "google-chrome"
-
-    # productivity
-    "appcleaner"
-    "thaw@beta"
-    "logi-options+"
-    "raycast"
-    "rectangle"
-    "shottr"
-    "protonvpn"
-    # "stats"
-    "qbittorrent"
-    "the-unarchiver"
-    "cap"
-
-    # chat
-    "discord"
-    "telegram"
-
-    # media
-    "iina"
-    "moonlight"
-    "mounty"
-    "obs"
-    "seadrive"
-    "seafile-client"
-
-    # file system support
-    "macfuse"
-
-    # android development
-    "android-file-transfer"
-
-    # communication
-    "slack"
-    "zoom"
-
-    # developer tools
-    # "cursor"
-    "dbeaver-community"
-    "iterm2"
-    "jetbrains-toolbox"
-    "orbstack"
-    "postman"
-    "claude"
-    "codex"
-    "antigravity"
-
-    # research
-    "mendeley-reference-manager"
-
-    # fonts
-    "font-caskaydia-mono-nerd-font"
-  ];
-
+  environment.shellInit = lib.mkIf config.homebrew.enable ''
+    eval "$(${config.homebrew.prefix}/bin/brew shellenv)"
+  '';
 }

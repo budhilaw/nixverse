@@ -1,6 +1,7 @@
 result
 .DS_Store
 .claude/settings.local.json
+CLAUDE.md
 
-# SOPS-encrypted secrets are safe to commit (encrypted with age)
-# Only the age private key (~/.config/sops/age/keys.txt) must stay out of gitCLAUDE.md
+# SOPS-encrypted secrets are safe to commit (encrypted with age).
+# Only the age private key (~/.config/sops/age/keys.txt) must stay out of git.

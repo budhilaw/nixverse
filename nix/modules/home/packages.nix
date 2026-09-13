@@ -1,90 +1,76 @@
-{ pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 
 {
-  # Packages with configuration --------------------------------------------------------------- {{{
-  programs.home-manager.enable = true;
-
-  programs.nix-index.enable = false;
-
-  # Bat, a substitute for cat.
-  # https://github.com/sharkdp/bat
-  # https://rycee.gitlab.io/home-manager/options.html#opt-programs.bat.enable
-  programs.bat.enable = true;
-  programs.bat.config = {
-    style = "plain";
-    theme = "TwoDark";
-  };
-  # Direnv, load and unload environment variables depending on the current directory.
-
-  # https://direnv.net
-  # https://rycee.gitlab.io/home-manager/options.html#opt-programs.direnv.enable
-  programs.direnv.enable = true;
-  programs.direnv.silent = true;
-  programs.direnv.nix-direnv.enable = true;
-
-  # Htop
-  # https://rycee.gitlab.io/home-manager/options.html#opt-programs.btop.enable
-  programs.btop.enable = true;
-  programs.btop.settings = {
-    vim_keys = true;
-    show_battery = false;
+  options.within.dev.enable = lib.mkEnableOption "developer toolchain and cloud CLIs" // {
+    default = true;
   };
 
-  home.packages =
-    with pkgs;
-    [
-      ################################## 
-      # Common
-      ##################################
-      lsd
-      htop
-      tldr
-      jq
-      fd
-      wget
-      curl
-      eza
-      fastfetch
-      git
+  config = {
+    programs.home-manager.enable = true;
 
-      ##################################
-      # Development
-      ##################################
-      pkg-config
-      sops
-      kubectl
-      (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
-      docker
-      mkcert
-      vscode
+    programs.bat = {
+      enable = true;
+      config = {
+        style = "plain";
+        theme = "TwoDark";
+      };
+    };
 
-      ##################################
-      # Productivity
-      ##################################
-      starship # theme for shell (bash,fish,zsh)
-      tmux
-      gnupg
-      openssl
-      ffmpeg
-      android-tools
+    programs.direnv = {
+      enable = true;
+      silent = true;
+      nix-direnv.enable = true;
+    };
 
-      ##################################
-      # Useful Nix related tools
-      ##################################
-      cachix
-      comma # run without install
-    ]
-    ++ lib.optionals stdenv.isDarwin [
-      mas
-      m-cli # useful macOS CLI commands
-      ntfs3g
-      pinentry-curses
-      pinentry_mac
+    programs.btop = {
+      enable = true;
+      settings = {
+        vim_keys = true;
+        show_battery = false;
+      };
+    };
 
-      ##################################
-      # Developer Tools
-      ##################################
-      xcode-install
-      cloudflared
-    ];
+    home.packages =
+      with pkgs;
+      [
+        # everyday CLI
+        lsd
+        eza
+        htop
+        tldr
+        jq
+        fd
+        wget
+        curl
+        fastfetch
+        git
+        tmux
+        starship
+        gnupg
+        openssl
+        cachix
+      ]
+      ++ lib.optionals config.within.dev.enable [
+        pkg-config
+        kubectl
+        (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
+        mkcert
+        ffmpeg
+        android-tools
+      ]
+      ++ lib.optionals stdenv.hostPlatform.isDarwin [
+        vscode
+        docker # CLI for OrbStack
+        cloudflared
+        mas
+        m-cli
+        xcode-install
+        pinentry_mac
+      ];
+  };
 }

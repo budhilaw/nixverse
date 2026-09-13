@@ -2,155 +2,101 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }:
 
 let
-  inherit (lib) mkIf;
-  nixConfigDirectory = "~/.config/nixpkgs";
-  # usefull when want to write bin bash
-  # n = pkgs.writers.writeBash "n" ''
-  #     while getopts p flag
-  #   do
-  #       case "${flag}" in
-  #           p) nix develop "my#$1" ${OPTARG};;
-  #           *) nix develop "my#$1" -c $SHELL;;
-  #       esac
-  #   done
-  # '';
-  commandFoldl' = lib.strings.concatMapStrings (x: "${x} && ");
-  shellAliases =
-    with pkgs;
-    let
-      verify =
-        writeScriptBin "verify" # bash
-          ''
-            [[ -z "$1" ]] && echo "No argument provided" && exit 0
+  nixverse = "~/.config/nixverse";
+  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
+  isLinux = pkgs.stdenv.hostPlatform.isLinux;
 
-            [[ $1 == ^-?[0-9]+(\.[0-9]+)?$ ]] && echo "The first argument is not a number: $1" && exit 0
-          '';
+  # gdb/gdbr/gdt/gdtr <days>: delete branches/tags older than N days.
+  gitPrune =
+    let
       cmd =
-        a: b: x: # bash
+        sortKey: ref: action: # bash
         ''
-          set -e 
-          ${verify}/bin/verify $1 || exit 0
-          ${git}/bin/git for-each-ref --sort=${a} --format '%(refname:short) %(${a}:format:%s)' "${b}" | while read tag tagdate; do
-            threshold_date=$(date -d "$1 days ago" --utc '+%s')
-            if [ -n "$tagdate" ]; then
-              if [ "$tagdate" -lt "$threshold_date" ]; then
-                echo "==> $tag is older than $1 days"
-                echo "==> $tag  will be deleted"
-                TAGS="$TAGS $tag"
-              fi
+          set -e
+          [ -z "$1" ] && echo "usage: $(basename "$0") <days>" && exit 1
+          threshold=$(date -v-"$1"d +%s 2>/dev/null || date -d "$1 days ago" +%s)
+          ${pkgs.git}/bin/git for-each-ref --sort=${sortKey} --format '%(refname:short) %(${sortKey}:unix)' "${ref}" \
+          | while read -r name when; do
+            if [ -n "$when" ] && [ "$when" -lt "$threshold" ]; then
+              echo "==> $name is older than $1 days, deleting"
+              ${action} "$name"
             fi
           done
-          ${x} $TAGS
         '';
-      scripts = {
-        gdb = writeScriptBin "gdb" (cmd "committerdate" "refs/heads" "git branch -D");
-        gdbr = writeScriptBin "gdbr" (cmd "committerdate" "origin/refs/heads" "git push origin -d");
-        gdt = writeScriptBin "gdt" (cmd "taggerdate" "refs/tags/*" "git tag -d");
-        gdtr = writeScriptBin "gdtr" (cmd "taggerdate" "origin/refs/tags/*" "git push origin -d");
-      };
     in
     {
-      gdb = ''${scripts.gdb}/bin/gdb'';
-      gdbr = ''${scripts.gdbr}/bin/gdbr'';
-      gdt = ''${scripts.gdt}/bin/gdt'';
-      gdtr = ''${scripts.gdtr}/bin/gdtr'';
-
-      tg = "tree --gitignore";
-      # Nix related
-      nclean = commandFoldl' [
-        "nix profile wipe-history"
-        "nix-collect-garbage"
-        "nix-collect-garbage -d"
-        "nix-collect-garbage --delete-old"
-        "nix store gc"
-        "nix store optimise"
-        "nix-store --verify --repair --check-contents"
-      ];
-      da = "direnv allow";
-      dr = "direnv reload";
-      drb = "darwin-rebuild build --flake ${nixConfigDirectory}";
-      drs = "darwin-rebuild switch --flake ${nixConfigDirectory}";
-
-      # secret gpg export
-      gpbs = "gpg --export-options backup --export-secret-keys";
-      # public gpg export
-      gpbp = "gpg --export-options backup --export";
-      # secret or public gpg import
-      gprs = "gpg --export-options restore --import";
-      # gpg trust data
-      gpbt = "gpg --export-ownertrust";
-      gprt = "gpg --import-ownertrust";
-
-      # Nix
-      ## lenv show list generations aka list build version
-      ## senv switch generation <number>
-      ## denv delete generation <number>
-      ## renv rollback to previous version number
-      ## param: <GENEREATION_NUMBER>
-      ## run lenv before if you want to see <GENEREATION_NUMBER>
-      lenv = "nix-env --list-generations";
-      senv = "nix-env --switch-generation";
-      denv = "nix-env --delete-generations";
-      doenv = "denv old";
-      renv = "nix-env --rollback";
-      # is equivalent to: nix build --recreate-lock-file
-      flakeup-all = "nix flake update ${nixConfigDirectory}";
-      # example:
-      # $ flakeup home-manager
-      flakeup = "nix flake lock ${nixConfigDirectory} --update-input";
-      nb = "nix build";
-      ndp = "nix develop";
-      nf = "nix flake";
-      nr = "nix run";
-      ns = "nix-shell";
-      nq = "nix search";
-      # Cryptography
-      age = "${pkgs.rage}/bin/rage";
-
-      # Shell related
-      e = "nvim";
-      grep = "${pkgs.ripgrep}/bin/rg";
-      c = "z";
-      cc = "zi";
-      # Others
-      rm = "rm -i";
-      p = "ping";
-      l = "ls -l";
-      la = "ls -a";
-      lla = "ls -la";
-      lt = "ls --tree";
-      cat = "${pkgs.bat}/bin/bat";
-      du = "${pkgs.dust}/bin/dust";
-
-      # Git
-      g = "git";
-      pullhead = "git pull origin (git rev-parse --abbrev-ref HEAD)";
-      beda = "gd";
-      ingfo = "git status";
-      tarek = "pullhead";
-      pushhead = "git push origin (git rev-parse --abbrev-ref HEAD)";
-      gas = "pushhead";
-      gasin = "pushhead --force";
-      gtmp = "git commit -m \"temp\" --no-verify";
-      gf = "git flow";
-      gl = "git log --graph --oneline --all";
-      gll = "git log --oneline --decorate --all --graph --stat";
-      gld = "git log --oneline --all --pretty=format:\"%h%x09%an%x09%ad%x09%s\"";
-      gls = "gl --show-signature";
-      gfa = "git fetch --all";
-      grc = "git rebase --continue";
-      gri = "git rebase --interactive";
-
-      # Documentation
-      todo = "nvim ${nixConfigDirectory}/notes/todo.norg";
-      todox = "nvim ${nixConfigDirectory}/secrets/todo.norg";
-      diary = "nvim ${nixConfigDirectory}/notes/diary.norg";
+      gdb = pkgs.writeShellScriptBin "gdb" (cmd "committerdate" "refs/heads" "git branch -D");
+      gdbr = pkgs.writeShellScriptBin "gdbr" (
+        cmd "committerdate" "refs/remotes/origin" "git push origin -d"
+      );
+      gdt = pkgs.writeShellScriptBin "gdt" (cmd "taggerdate" "refs/tags" "git tag -d");
+      gdtr = pkgs.writeShellScriptBin "gdtr" (cmd "taggerdate" "refs/tags" "git push origin -d");
     };
+
+  shellAliases = {
+    # nixverse
+    flakeup-all = "nix flake update --flake ${nixverse}";
+    flakeup = "nix flake update --flake ${nixverse}"; # flakeup nixpkgs
+    nclean = "sudo nix-collect-garbage --delete-older-than 30d && nix store optimise";
+    nb = "nix build";
+    ndp = "nix develop";
+    nf = "nix flake";
+    nr = "nix run";
+    ns = "nix-shell";
+    nq = "nix search";
+    da = "direnv allow";
+    dr = "direnv reload";
+
+    # gpg backup/restore
+    gpbs = "gpg --export-options backup --export-secret-keys";
+    gpbp = "gpg --export-options backup --export";
+    gprs = "gpg --export-options restore --import";
+    gpbt = "gpg --export-ownertrust";
+    gprt = "gpg --import-ownertrust";
+
+    # shell
+    grep = "${pkgs.ripgrep}/bin/rg";
+    cat = "${pkgs.bat}/bin/bat";
+    du = "${pkgs.dust}/bin/dust";
+    c = "z";
+    cc = "zi";
+    rm = "rm -i";
+    p = "ping";
+    l = "ls -l";
+    la = "ls -a";
+    lla = "ls -la";
+
+    # git
+    g = "git";
+    pullhead = "git pull origin (git rev-parse --abbrev-ref HEAD)";
+    pushhead = "git push origin (git rev-parse --abbrev-ref HEAD)";
+    beda = "git diff";
+    ingfo = "git status";
+    tarek = "pullhead";
+    gas = "pushhead";
+    gasin = "pushhead --force";
+    gtmp = "git commit -m \"temp\" --no-verify";
+    gf = "git flow";
+    gl = "git log --graph --oneline --all";
+    gll = "git log --oneline --decorate --all --graph --stat";
+    gld = "git log --oneline --all --pretty=format:\"%h%x09%an%x09%ad%x09%s\"";
+    gls = "gl --show-signature";
+    gfa = "git fetch --all";
+    grc = "git rebase --continue";
+    gri = "git rebase --interactive";
+  }
+  // lib.optionalAttrs isDarwin {
+    drb = "darwin-rebuild build --flake ${nixverse}#macbook-air";
+    drs = "sudo darwin-rebuild switch --flake ${nixverse}#macbook-air";
+  }
+  // lib.optionalAttrs isLinux {
+    nrb = "nixos-rebuild build --flake ${nixverse}";
+    nrs = "sudo nixos-rebuild switch --flake ${nixverse}";
+  };
 in
 {
   home = {
@@ -159,97 +105,70 @@ in
     packages = [
       pkgs.babelfish
       pkgs.fishPlugins.colored-man-pages
-      # https://github.com/franciscolourenco/done
       pkgs.fishPlugins.done
-      # use babelfish than foreign-env
-      # pkgs.fishPlugins.foreign-env
-      # https://github.com/wfxr/forgit
-      # pkgs.fishPlugins.forgit
-      # Paired symbols in the command line
-      # pkgs.fishPlugins.pisces
-      # pkgs.fishPlugins.puffer
-      # pkgs.fishPlugins.fifc
-      # pkgs.fishPlugins.bass
-    ];
+    ]
+    ++ lib.attrValues gitPrune;
   };
 
   programs = {
-    # Shell history replacement
-    # in MacOS type `Ctrl+R` to search history
-    atuin.enable = true;
-    atuin.enableFishIntegration = config.programs.fish.enable;
-    atuin.enableBashIntegration = config.programs.bash.enable;
+    atuin = {
+      enable = true;
+      enableFishIntegration = config.programs.fish.enable;
+      enableBashIntegration = config.programs.bash.enable;
+    };
 
-    # command-not-found integration
-    nix-index.enableFishIntegration = false;
-    nix-index.enableBashIntegration = false;
+    zoxide = {
+      enable = true;
+      enableFishIntegration = config.programs.fish.enable;
+    };
 
-    # jump like `z` or `fasd`
-    zoxide.enable = true;
-    zoxide.enableFishIntegration = config.programs.fish.enable;
-
-    dircolors.enable = true;
-    dircolors.enableFishIntegration = config.programs.fish.enable;
+    dircolors = {
+      enable = true;
+      enableFishIntegration = config.programs.fish.enable;
+    };
 
     bash = {
       enable = true;
       enableCompletion = true;
     };
 
-    # Fish Shell (Default shell)
-    # https://rycee.gitlab.io/home-manager/options.html#opt-programs.fish.enable
     fish = {
       enable = true;
-
-      # Fish plugins
-      # See:
-      # https://github.com/NixOS/nixpkgs/tree/90e20fc4559d57d33c302a6a1dce545b5b2a2a22/pkgs/shells/fish/plugins
-      # for list available plugins built-in nixpkgs
-      plugins = [ ];
 
       functions = {
         ghds = ''
           for repo in $argv
-            gh repo delete $r --yes
+            gh repo delete $repo --yes
           end
         '';
         gitignore = "curl -sL https://www.gitignore.io/api/$argv";
-        nd = "nix develop ${nixConfigDirectory}#$argv[1] -c $SHELL";
+        nd = "nix develop ${nixverse}#$argv[1] -c $SHELL";
         rpkgjson = ''
           ${pkgs.nodejs}/bin/node -e "console.log(Object.entries(require('./package.json').$argv[1]).map(([k,v]) => k.concat(\"@\").concat(v)).join(\"\n\") )"
         '';
-      } // lib.optionalAttrs pkgs.stdenv.isLinux {
-        # Function to launch Cursor from WSL (Linux/NixOS only)
+      }
+      // lib.optionalAttrs isLinux {
+        # Launch Cursor (Windows) from inside WSL.
         cursor = ''
           set -l cursor_bin "/mnt/c/Users/Ericsson Budhilaw/AppData/Local/Programs/cursor/resources/app/bin/cursor"
-          
           if test -f "$cursor_bin"
-            # If path argument is provided, use it; otherwise use current path
-            set -l target_path
             if test (count $argv) -gt 0
-              # Convert the provided path to absolute path
-              set target_path (realpath $argv[1])
+              "$cursor_bin" (realpath $argv[1])
             else
-              set target_path (pwd)
+              "$cursor_bin" (pwd)
             end
-            
-            # Execute cursor binary with target path
-            "$cursor_bin" "$target_path"
           else
-            echo "Cursor binary not found in the expected location: $cursor_bin"
+            echo "Cursor binary not found: $cursor_bin"
           end
         '';
       };
 
       interactiveShellInit = ''
-        # PATH
         fish_add_path -g ~/.local/bin
 
-        # Locale
         set -gx LANG en_US.UTF-8
         set -gx LC_ALL en_US.UTF-8
 
-        # Fish color
         set -U fish_color_command 6CB6EB --bold
         set -U fish_color_redirection DEB974
         set -U fish_color_operator DEB974
@@ -257,10 +176,9 @@ in
         set -U fish_color_error EC7279 --bold
         set -U fish_color_param 6CB6EB
         set fish_greeting
-      ''; 
+      '';
     };
 
-    # Shell prompt and style
     starship = {
       enable = true;
       enableFishIntegration = config.programs.fish.enable;
@@ -290,7 +208,7 @@ in
 
           bun.format = defaultProgramFormat;
           git_branch.format = withEndLineBreak "[$symbol$branch]($style)";
-          git_status.format = withEndLineBreak "([$all_status$ahead_behind]($style))";
+          git_status.format = withEndLineBreak "([$all_status$ahead_behind]($style))";
           gcloud.format = withEndLineBreak "[$symbol$active]($style)";
           golang.format = defaultProgramFormat;
           nix_shell.symbol = "❄️";

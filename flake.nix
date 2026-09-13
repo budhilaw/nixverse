@@ -1,84 +1,54 @@
 {
-  description = "Budhilaw Nix Configuration";
+  description = "nixverse — Budhilaw's machines, declaratively";
 
   outputs =
     inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
         "aarch64-darwin"
-        "aarch64-linux"
         "x86_64-linux"
+        "aarch64-linux"
       ];
-
-      imports = [
-        inputs.pre-commit-hooks.flakeModule
-        inputs.devenv.flakeModule
-        ./nix
-      ];
+      imports = [ ./nix ];
     };
 
   inputs = {
-    # utilities for Flake
+    ## nixpkgs — unstable is the default, stable is exposed as `pkgs.stable`
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/release-25.11";
+
+    ## flake plumbing
     flake-parts.url = "github:hercules-ci/flake-parts";
-    ez-configs.url = "github:ehllie/ez-configs";
+    # Pinned to ehllie/ez-configs#27 (stdenv.isDarwin -> hostPlatform fix).
+    # Switch back to "github:ehllie/ez-configs" once that PR is merged.
+    ez-configs.url = "github:magistau/ez-configs/dc144599881813cdfacef08da8ef33c0ab47f798";
     ez-configs.inputs.nixpkgs.follows = "nixpkgs";
     ez-configs.inputs.flake-parts.follows = "flake-parts";
+    git-hooks.url = "github:cachix/git-hooks.nix";
+    git-hooks.inputs.nixpkgs.follows = "nixpkgs";
 
-    ### -- nix related tools
-    process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
-    services-flake.url = "github:juspay/services-flake";
-
-    ## -- nixpkgs 
-    nixpkgs-master.url = "github:NixOS/nixpkgs/master";
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/release-25.11";
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixpkgs.follows = "nixpkgs-unstable";
-
-    ## -- Platform
-
-    #### ---- WSL
-    nixos-wsl.url = "github:nix-community/NixOS-WSL";
-    nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
-
-    #### ---- VS Code Server
-    vscode-server.url = "github:nix-community/nixos-vscode-server";
-    vscode-server.inputs.nixpkgs.follows = "nixpkgs";
-
-    #### ---- MacOS
-    nix-darwin.url = "github:LnL7/nix-darwin";
+    ## macOS
+    nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-
-    # Keeps Launch Services / Spotlight / Dock in sync with Nix-installed apps
-    # (stable trampolines) so old versions get unregistered on each rebuild
-    # instead of piling up as duplicate "Open With" entries.
+    # Determinate Nix owns the daemon on macOS; this module writes our custom
+    # settings to /etc/nix/nix.custom.conf and keeps determinate-nixd current.
+    determinate.url = "github:DeterminateSystems/determinate";
+    # Keeps Launch Services / Spotlight / Dock in sync with Nix-installed apps.
     mac-app-util.url = "github:hraban/mac-app-util";
     mac-app-util.inputs.nixpkgs.follows = "nixpkgs";
 
-    #### ---- Home
-    home-manager.url = "github:nix-community/home-manager/master";
+    ## Linux
+    nixos-wsl.url = "github:nix-community/NixOS-WSL";
+    nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs";
+
+    ## home
+    home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    
-    # secret management
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
-
-    # utilities
-    pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
-    pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
-
-    # devenv for development environments
-    devenv.url = "github:cachix/devenv";
-    devenv.inputs.nixpkgs.follows = "nixpkgs";
-
-    # nix-index pre-built database
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
-
-    # others
-    nix-env = {
-      url = "github:lilyball/nix-env.fish";
-      flake = false;
-    };
-
   };
 }
