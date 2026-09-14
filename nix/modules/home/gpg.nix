@@ -1,5 +1,5 @@
-# GPG keyring + agent. Private keys are decrypted by sops-nix and imported on
-# activation. SSH authentication is deliberately NOT routed through gpg-agent:
+# GPG keyring + agent config. Private keys are decrypted by sops-nix and
+# imported on activation. SSH authentication is deliberately NOT routed through gpg-agent:
 # on macOS the Apple ssh-agent + Keychain handles that (see ssh.nix).
 {
   lib,
@@ -35,15 +35,18 @@ in
       settings.trust-model = "tofu+pgp";
     };
 
-    services.gpg-agent = {
-      enable = true;
-      enableSshSupport = false;
-      defaultCacheTtl = 34560000;
-      maxCacheTtl = 34560000;
-      pinentry.package =
-        if pkgs.stdenv.hostPlatform.isDarwin then pkgs.pinentry_mac else pkgs.pinentry-curses;
-      extraConfig = "allow-loopback-pinentry";
-    };
+    # No launchd job: home-manager's darwin gpg-agent agent cannot receive the
+    # launchd socket (`--supervised` wants fd 3) and just crash-loops. gpg
+    # starts the agent on demand from this config instead.
+    home.file.".gnupg/gpg-agent.conf".text = ''
+      default-cache-ttl 34560000
+      max-cache-ttl 34560000
+      pinentry-program ${
+        lib.getExe (if pkgs.stdenv.hostPlatform.isDarwin then pkgs.pinentry_mac else pkgs.pinentry-curses)
+      }
+      allow-loopback-pinentry
+      grab
+    '';
 
     programs.fish.interactiveShellInit = ''
       set -gx GPG_TTY (tty)
@@ -61,7 +64,7 @@ in
     ) cfg.privateKeys;
 
     home.activation.importGpgKeys = lib.mkIf (cfg.privateKeys != { }) (
-      lib.hm.dag.entryAfter [ "sopsNix" ] ''
+      lib.hm.dag.entryAfter [ "sops-nix" ] ''
         export GNUPGHOME="${config.home.homeDirectory}/.gnupg"
         ${lib.concatMapStringsSep "\n" (name: ''
           if [ -f "${keyDir}/${name}.asc" ]; then
