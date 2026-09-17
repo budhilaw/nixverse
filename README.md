@@ -1,6 +1,10 @@
-# nixverse
+<p align="center">
+  <img src="nixverse.png" alt="nixverse" width="180">
+</p>
 
-One flake for all of Budhilaw's machines.
+<h1 align="center">nixverse</h1>
+
+<p align="center">One flake for all of Budhilaw's machines.</p>
 
 | Host | Hardware | OS | Output |
 |------|----------|----|--------|
