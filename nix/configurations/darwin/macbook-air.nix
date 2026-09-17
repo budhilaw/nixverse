@@ -44,13 +44,11 @@
     };
     within.ssh = {
       sopsFile = "${inputs.self}/secrets/budhilaw-ssh.yaml";
+      # personal, work, business: one key per trust domain
       privateKeys = [
         "id_ed25519_personal"
-        "id_ed25519_hosthatch"
-        "id_ed25519_hosthatch_deploy"
-        "id_ed25519_hosthatch_deploy_agent"
         "id_ed25519_amartha"
-        "id_ed25519_cloudnan_deploy"
+        "id_ed25519_business"
       ];
     };
   };

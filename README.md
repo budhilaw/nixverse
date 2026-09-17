@@ -24,7 +24,7 @@ nix/overlays.nix                pkgs.stable (nixpkgs release branch)
 nix/dev-shells.nix              nix develop ~/.config/nixverse#<name>
 nix/configurations/
   darwin/macbook-air.nix        personal Mac: identity, secrets it carries, iTerm2 profile
-  darwin/macbook-pro.nix        office Mac: work keys only
+  darwin/macbook-pro.nix        office Mac: work key only
   nixos/homelab-lenovo/         server: hardware, disko, services, containers
   home/budhilaw.nix             shared home profile (ssh aliases, public keys)
 nix/modules/
@@ -64,8 +64,8 @@ Encrypted with [sops-nix](https://github.com/Mic92/sops-nix) + age.
 
 - **Macs**: personal age key from 1Password at `~/.config/sops/age/keys.txt`.
   It decrypts SSH/GPG private keys into `~/.ssh` and the GPG keyring on rebuild.
-  Each Mac's host file lists which keys it carries; the office Mac gets only
-  the work keys plus the personal SSH key.
+  One key per trust domain: personal, work (`amartha`), business. The Air
+  carries all three; the office Mac carries only the work key.
 - **Homelab**: decrypts with its own SSH host key (`ssh-to-age`), so the
   personal key never lands on the server. Its file is
   `secrets/homelab-lenovo.yaml`.

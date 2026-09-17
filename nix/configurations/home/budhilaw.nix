@@ -23,10 +23,8 @@
     publicKeys = {
       id_ed25519_personal = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAVtM3ijBnlhJzKAttdc22AbJzHt0iTqB+A9t5LKrLrv ericsson@budhilaw.com";
       id_ed25519_amartha = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMbz/EiDGc02i6MGql1xxUS3GDSH6G+fFRmiVIoO2BMX ericsson.budhilaw@amartha.com";
-      id_ed25519_hosthatch = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINL8bYvG9NzButmdWR/hnhv0Uxm+JNbEvMf+kxPIbRSg ericsson.budhilaw@gmail.com";
-      id_ed25519_hosthatch_deploy = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOdx1ld3dde+kYD+8WvU8z2qipJO6LkQhEc6S+3/mKpK github-actions-deploy";
-      id_ed25519_hosthatch_deploy_agent = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAU/BJNdUSN4kszY2hFKNAkkDUly1wfLUdijZ5BQWCsJ github-actions-deploy-agent";
-      id_ed25519_cloudnan_deploy = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIESjcM8xIL8wJ99n+FvGqpgXK+HoZE0BKOUt1Ktr3dDD ericsson@cloudnan.com cloudnan-deploy";
+      # business: Cloudnan servers and the HostHatch VPS
+      id_ed25519_business = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIESjcM8xIL8wJ99n+FvGqpgXK+HoZE0BKOUt1Ktr3dDD ericsson@cloudnan.com business";
     };
   };
 
@@ -58,7 +56,7 @@
       HostName = "31.57.224.49";
       User = "kai";
       Port = 14048;
-      IdentityFile = "~/.ssh/id_ed25519_hosthatch";
+      IdentityFile = "~/.ssh/id_ed25519_business";
       IdentitiesOnly = true;
     };
     onidel = {
@@ -70,25 +68,25 @@
     cloudnan-db = {
       HostName = "165.245.184.200";
       User = "root";
-      IdentityFile = "~/.ssh/id_ed25519_cloudnan_deploy";
+      IdentityFile = "~/.ssh/id_ed25519_business";
       IdentitiesOnly = true;
     };
     cloudnan-grpc = {
       HostName = "152.42.208.47";
       User = "root";
-      IdentityFile = "~/.ssh/id_ed25519_cloudnan_deploy";
+      IdentityFile = "~/.ssh/id_ed25519_business";
       IdentitiesOnly = true;
     };
     cloudnan-core = {
       HostName = "168.144.36.205";
       User = "root";
-      IdentityFile = "~/.ssh/id_ed25519_cloudnan_deploy";
+      IdentityFile = "~/.ssh/id_ed25519_business";
       IdentitiesOnly = true;
     };
     cloudnan-runner = {
       HostName = "206.189.88.184";
       User = "root";
-      IdentityFile = "~/.ssh/id_ed25519_cloudnan_deploy";
+      IdentityFile = "~/.ssh/id_ed25519_business";
       IdentitiesOnly = true;
     };
   };

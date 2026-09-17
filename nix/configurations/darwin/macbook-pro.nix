@@ -1,5 +1,5 @@
-# MacBook Pro M2 — the office machine. Same profile as the Air; carries the
-# work (Amartha) keys plus the personal SSH key for GitHub and the homelab.
+# MacBook Pro M2 — the office machine. Same profile as the Air; carries only
+# the work (Amartha) keys.
 {
   inputs,
   lib,
@@ -32,10 +32,7 @@
     };
     within.ssh = {
       sopsFile = "${inputs.self}/secrets/budhilaw-ssh.yaml";
-      privateKeys = [
-        "id_ed25519_personal"
-        "id_ed25519_amartha"
-      ];
+      privateKeys = [ "id_ed25519_amartha" ];
     };
   };
 }
