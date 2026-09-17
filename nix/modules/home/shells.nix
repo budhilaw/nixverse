@@ -2,11 +2,15 @@
   config,
   lib,
   pkgs,
+  osConfig,
   ...
 }:
 
 let
   nixverse = "~/.config/nixverse";
+  # Flake attribute for this machine (`drs`/`nrs` rebuild it). Defaults to the
+  # hostname; hosts whose attribute name differs set within.host explicitly.
+  host = config.within.host;
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
 
@@ -90,16 +94,22 @@ let
     gri = "git rebase --interactive";
   }
   // lib.optionalAttrs isDarwin {
-    drb = "darwin-rebuild build --flake ${nixverse}#macbook-air";
-    drs = "sudo darwin-rebuild switch --flake ${nixverse}#macbook-air";
+    drb = "darwin-rebuild build --flake ${nixverse}#${host}";
+    drs = "sudo darwin-rebuild switch --flake ${nixverse}#${host}";
   }
   // lib.optionalAttrs isLinux {
-    nrb = "nixos-rebuild build --flake ${nixverse}";
-    nrs = "sudo nixos-rebuild switch --flake ${nixverse}";
+    nrb = "nixos-rebuild build --flake ${nixverse}#${host}";
+    nrs = "sudo nixos-rebuild switch --flake ${nixverse}#${host}";
   };
 in
 {
-  home = {
+  options.within.host = lib.mkOption {
+    type = lib.types.str;
+    default = osConfig.networking.hostName;
+    description = "Flake output name of this machine, used by the rebuild aliases.";
+  };
+
+  config.home = {
     inherit shellAliases;
     sessionPath = [ "$HOME/.yarn/bin" ];
     packages = [
@@ -110,7 +120,7 @@ in
     ++ lib.attrValues gitPrune;
   };
 
-  programs = {
+  config.programs = {
     atuin = {
       enable = true;
       enableFishIntegration = config.programs.fish.enable;
@@ -145,21 +155,6 @@ in
         nd = "nix develop ${nixverse}#$argv[1] -c $SHELL";
         rpkgjson = ''
           ${pkgs.nodejs}/bin/node -e "console.log(Object.entries(require('./package.json').$argv[1]).map(([k,v]) => k.concat(\"@\").concat(v)).join(\"\n\") )"
-        '';
-      }
-      // lib.optionalAttrs isLinux {
-        # Launch Cursor (Windows) from inside WSL.
-        cursor = ''
-          set -l cursor_bin "/mnt/c/Users/Ericsson Budhilaw/AppData/Local/Programs/cursor/resources/app/bin/cursor"
-          if test -f "$cursor_bin"
-            if test (count $argv) -gt 0
-              "$cursor_bin" (realpath $argv[1])
-            else
-              "$cursor_bin" (pwd)
-            end
-          else
-            echo "Cursor binary not found: $cursor_bin"
-          end
         '';
       };
 

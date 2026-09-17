@@ -1,5 +1,5 @@
 {
-  description = "nixverse — Budhilaw's machines, declaratively";
+  description = "nixverse — one flake for all of my machines";
 
   outputs =
     inputs:
@@ -38,8 +38,6 @@
     mac-app-util.inputs.nixpkgs.follows = "nixpkgs";
 
     ## Linux
-    nixos-wsl.url = "github:nix-community/NixOS-WSL";
-    nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 

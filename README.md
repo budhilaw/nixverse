@@ -4,13 +4,13 @@
 
 <h1 align="center">nixverse</h1>
 
-<p align="center">One flake for all of Budhilaw's machines.</p>
+<p align="center">One flake for all of my machines.</p>
 
 | Host | Hardware | OS | Output |
 |------|----------|----|--------|
-| `macbook-air` | MacBook Air M4 (hostname `budhilaw`) | macOS + nix-darwin + Determinate Nix | `darwinConfigurations.macbook-air` |
+| `macbook-air` | MacBook Air M4, personal (hostname `budhilaw`) | macOS + nix-darwin + Determinate Nix | `darwinConfigurations.macbook-air` |
+| `macbook-pro` | MacBook Pro M2, office | macOS + nix-darwin + Determinate Nix | `darwinConfigurations.macbook-pro` |
 | `homelab-lenovo` | Lenovo M920Q, Malang | NixOS (services as containers) | `nixosConfigurations.homelab-lenovo` |
-| `gaming-wsl` | Windows gaming PC | NixOS-WSL (Windows itself stays imperative) | `nixosConfigurations.gaming-wsl` |
 
 All three share one home-manager profile (`budhilaw`): fish + starship + atuin,
 git with directory-based identities, SSH host aliases, sops-managed keys.
@@ -23,8 +23,8 @@ nix/default.nix                 flake-parts + ez-configs wiring, shared nixpkgs 
 nix/overlays.nix                pkgs.stable (nixpkgs release branch)
 nix/dev-shells.nix              nix develop ~/.config/nixverse#<name>
 nix/configurations/
-  darwin/macbook-air.nix        Mac host: identity, secrets it carries, iTerm2 profile
-  nixos/gaming-wsl.nix          WSL host
+  darwin/macbook-air.nix        personal Mac: identity, secrets it carries, iTerm2 profile
+  darwin/macbook-pro.nix        office Mac: work keys only
   nixos/homelab-lenovo/         server: hardware, disko, services, containers
   home/budhilaw.nix             shared home profile (ssh aliases, public keys)
 nix/modules/
@@ -44,8 +44,8 @@ overrides via `home-manager.users.budhilaw`.
 ## Day to day
 
 ```sh
-drs                      # Mac: sudo darwin-rebuild switch --flake ~/.config/nixverse#macbook-air
-nrs                      # NixOS hosts: sudo nixos-rebuild switch --flake ~/.config/nixverse
+drs                      # Mac: sudo darwin-rebuild switch --flake ~/.config/nixverse#<this host>
+nrs                      # homelab: sudo nixos-rebuild switch --flake ~/.config/nixverse#homelab-lenovo
 flakeup                  # nix flake update (flakeup nixpkgs for one input)
 nd go                    # enter a dev shell (see nix/dev-shells.nix for names)
 nix flake check          # eval every host + run nixfmt/deadnix
@@ -62,12 +62,13 @@ nixos-rebuild switch --flake ~/.config/nixverse#homelab-lenovo \
 
 Encrypted with [sops-nix](https://github.com/Mic92/sops-nix) + age.
 
-- **Mac**: personal age key from 1Password at `~/.config/sops/age/keys.txt`.
+- **Macs**: personal age key from 1Password at `~/.config/sops/age/keys.txt`.
   It decrypts SSH/GPG private keys into `~/.ssh` and the GPG keyring on rebuild.
+  Each Mac's host file lists which keys it carries; the office Mac gets only
+  the work keys plus the personal SSH key.
 - **Homelab**: decrypts with its own SSH host key (`ssh-to-age`), so the
   personal key never lands on the server. Its file is
-  `secrets/homelab-lenovo.yaml`; the committed copy holds `CHANGE_ME`
-  placeholders that must be filled before the first deploy.
+  `secrets/homelab-lenovo.yaml`.
 
 ```sh
 export SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt
@@ -85,23 +86,13 @@ Adding a machine that needs secrets: derive its recipient
 # 1. Determinate Nix: https://dtr.mn/determinate-nix
 # 2. age key from 1Password
 mkdir -p ~/.config/sops/age && $EDITOR ~/.config/sops/age/keys.txt && chmod 600 ~/.config/sops/age/keys.txt
-# 3. first switch (later ones are just `drs`)
+# 3. first switch (later ones are just `drs`); pick macbook-air or macbook-pro
 git clone git@github.com:budhilaw/nixverse.git ~/.config/nixverse
 cd ~/.config/nixverse
-sudo nix run nix-darwin/nix-darwin/master#darwin-rebuild -- switch --flake .#macbook-air
-```
-
-## Gaming PC (WSL)
-
-```powershell
-# Windows: install the NixOS-WSL distro once
-wsl --install --from-file nixos.wsl     # from https://github.com/nix-community/NixOS-WSL/releases
-```
-
-```sh
-# inside the distro
-sudo nix run nixpkgs#git -- clone https://github.com/budhilaw/nixverse.git ~/.config/nixverse
-sudo nixos-rebuild switch --flake ~/.config/nixverse#gaming-wsl
+sudo nix run nix-darwin/nix-darwin/master#darwin-rebuild -- switch --flake .#macbook-pro
+# 4. tailnet (Homebrew formula, not the App Store app, so it can use Headscale)
+sudo tailscaled install-system-daemon
+sudo tailscale up --login-server https://headscale.budhilaw.com
 ```
 
 ## Homelab: first install
@@ -166,5 +157,4 @@ Started from [r17x/universe](https://github.com/r17x/universe). Built on
 [flake-parts](https://github.com/hercules-ci/flake-parts),
 [ez-configs](https://github.com/ehllie/ez-configs),
 [sops-nix](https://github.com/Mic92/sops-nix),
-[disko](https://github.com/nix-community/disko),
-[NixOS-WSL](https://github.com/nix-community/NixOS-WSL).
+[disko](https://github.com/nix-community/disko).

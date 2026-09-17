@@ -24,7 +24,7 @@
     };
     # Native Linux builder (macOS Virtualization.framework). Flip to "enabled"
     # once Determinate has rolled it out to this account; it lets the Mac build
-    # x86_64-linux closures for the homelab and WSL hosts.
+    # x86_64-linux closures for the homelab.
     determinateNixd.builder.state = "disabled";
   };
 }

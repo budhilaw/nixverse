@@ -30,6 +30,7 @@
 
   # Secrets only this machine carries.
   home-manager.users.budhilaw = {
+    within.host = "macbook-air";
     within.gpg = {
       enable = true;
       privateKeys = {

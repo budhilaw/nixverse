@@ -42,14 +42,14 @@
 
       darwin.modulesDirectory = ./modules/darwin;
       darwin.configurationsDirectory = ./configurations/darwin;
-      darwin.hosts.macbook-air.userHomeModules = [ "budhilaw" ];
+      darwin.hosts = {
+        macbook-air.userHomeModules = [ "budhilaw" ];
+        macbook-pro.userHomeModules = [ "budhilaw" ];
+      };
 
       nixos.modulesDirectory = ./modules/nixos;
       nixos.configurationsDirectory = ./configurations/nixos;
-      nixos.hosts = {
-        homelab-lenovo.userHomeModules = [ "budhilaw" ];
-        gaming-wsl.userHomeModules = [ "budhilaw" ];
-      };
+      nixos.hosts.homelab-lenovo.userHomeModules = [ "budhilaw" ];
     };
 
     perSystem =
