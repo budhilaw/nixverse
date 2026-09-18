@@ -79,6 +79,9 @@ in
         mkcert
         ffmpeg
         android-tools
+        # Native binary from nixpkgs (not the npm package); auto-updater is
+        # disabled by the wrapper, bump via `nix flake update nixpkgs`.
+        claude-code
       ]
       ++ lib.optionals stdenv.hostPlatform.isDarwin [
         vscode
