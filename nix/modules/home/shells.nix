@@ -93,6 +93,16 @@ let
     grc = "git rebase --continue";
     gri = "git rebase --interactive";
   }
+  // lib.optionalAttrs config.within.dev.enable {
+    # JS: pnpm and nothing else. npm/yarn are shadowed so a stray `npm i`
+    # can't build a duplicated node_modules outside pnpm's shared store.
+    # pnclean reclaims space from packages no project references any more.
+    npm = "${pkgs.stable.pnpm}/bin/pnpm";
+    yarn = "${pkgs.stable.pnpm}/bin/pnpm";
+    npx = "${pkgs.stable.pnpm}/bin/pnpm dlx";
+    pn = "${pkgs.stable.pnpm}/bin/pnpm";
+    pnclean = "${pkgs.stable.pnpm}/bin/pnpm store prune";
+  }
   // lib.optionalAttrs isDarwin {
     drb = "darwin-rebuild build --flake ${nixverse}#${host}";
     drs = "sudo darwin-rebuild switch --flake ${nixverse}#${host}";
@@ -111,7 +121,6 @@ in
 
   config.home = {
     inherit shellAliases;
-    sessionPath = [ "$HOME/.yarn/bin" ];
     packages = [
       pkgs.babelfish
       pkgs.fishPlugins.colored-man-pages
@@ -154,7 +163,7 @@ in
         gitignore = "curl -sL https://www.gitignore.io/api/$argv";
         nd = "nix develop ${nixverse}#$argv[1] -c $SHELL";
         rpkgjson = ''
-          ${pkgs.nodejs}/bin/node -e "console.log(Object.entries(require('./package.json').$argv[1]).map(([k,v]) => k.concat(\"@\").concat(v)).join(\"\n\") )"
+          ${pkgs.stable.nodejs_24}/bin/node -e "console.log(Object.entries(require('./package.json').$argv[1]).map(([k,v]) => k.concat(\"@\").concat(v)).join(\"\n\") )"
         '';
       };
 

@@ -145,9 +145,24 @@ Reserve `192.168.18.75` for the box's MAC on the router; the config uses DHCP.
 
 `nix/dev-shells.nix`: `go`, `goService`, `goAgent`, `carikelas`, `budhilaw`
 (Go); `nodejs`, `nodejs20/22/24`, `webApp`, `carikelasWeb`, `budhilawWeb`
-(Node, from the stable branch for cache hits); `python`, `python312`,
+(Node, from the stable branch for cache hits; pnpm is the only package
+manager, see below); `python`, `python312`,
 `python313`; `rust`; `java`; `php`. `default` is for hacking on this repo and
 installs the nixfmt/deadnix pre-commit hooks.
+
+### JavaScript: pnpm only
+
+pnpm is the single JS package manager across the flake. Its store is
+content-addressable and hardlinks packages into each `node_modules`, so a
+dependency shared by ten projects is stored once rather than ten times.
+`PNPM_HOME` is set per-platform in `nix/modules/home/packages.nix`
+(`~/Library/pnpm` on darwin, `~/.local/share/pnpm` on Linux) and its `bin`
+is on `PATH`, so `pnpm add -g` lands in the same store.
+
+The node dev shells ship pnpm and no other package manager, and `npm`,
+`npx` and `yarn` are aliased to pnpm so a stray `npm i` can't create a
+duplicated tree outside the store. `pnclean` runs `pnpm store prune` to
+drop packages nothing references any more.
 
 ## Acknowledgements
 

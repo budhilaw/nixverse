@@ -26,12 +26,15 @@
         };
 
       # Node from the stable release so binaries always come from the cache.
+      # pnpm is the only package manager here. Its content-addressable store
+      # hardlinks every dependency, so a node_modules costs close to nothing
+      # on disk; keeping yarn/npm around would just reintroduce duplicate
+      # per-project trees.
       nodeShell =
         node:
         pkgs.mkShell {
           nativeBuildInputs = [
             node
-            pkgs.stable.yarn
             pkgs.stable.pnpm
             # node-gyp needs distutils, gone from Python 3.12+
             (pkgs.python3.withPackages (ps: [ ps.setuptools ]))

@@ -5,6 +5,13 @@
   ...
 }:
 
+let
+  pnpmHome =
+    if pkgs.stdenv.hostPlatform.isDarwin then
+      "${config.home.homeDirectory}/Library/pnpm"
+    else
+      "${config.home.homeDirectory}/.local/share/pnpm";
+in
 {
   options.within.dev.enable = lib.mkEnableOption "developer toolchain and cloud CLIs" // {
     default = true;
@@ -26,6 +33,14 @@
       silent = true;
       nix-direnv.enable = true;
     };
+
+    # pnpm is the only global JS package manager. Its content-addressable
+    # store under PNPM_HOME is shared by every project and by `pnpm add -g`,
+    # so nothing gets duplicated the way `npm i -g` / per-project npm
+    # node_modules do. Same shape as home-manager's programs.pnpm, which is
+    # newer than the locked home-manager input.
+    home.sessionVariables.PNPM_HOME = pnpmHome;
+    home.sessionPath = [ "${pnpmHome}/bin" ];
 
     programs.btop = {
       enable = true;
@@ -56,6 +71,8 @@
         cachix
       ]
       ++ lib.optionals config.within.dev.enable [
+        # stable branch so it matches the node dev shells
+        stable.pnpm
         pkg-config
         kubectl
         (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
