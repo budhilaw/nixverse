@@ -41,7 +41,7 @@
       "rectangle"
       "shottr"
       "protonvpn"
-      "qbittorrent"
+      # "qbittorrent"
       "the-unarchiver"
       "cap"
 
