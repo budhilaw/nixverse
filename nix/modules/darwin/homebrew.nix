@@ -35,10 +35,8 @@
       "google-chrome"
 
       # productivity
-      "appcleaner"
+      "vorssaint"
       "thaw@beta"
-      "raycast"
-      "rectangle"
       "shottr"
       "protonvpn"
       # "qbittorrent"
@@ -61,6 +59,7 @@
       "android-file-transfer"
 
       # developer tools
+      "jetbrains-toolbox"
       "dbeaver-community"
       "iterm2"
       "orbstack"
