@@ -146,10 +146,11 @@
         python312 = pythonShell pkgs.python312;
 
         ## Rust
+        # No rustup: its shims shadow rustc/cargo on PATH and then fail, because
+        # nothing installs a toolchain under ~/.rustup.
         rust = pkgs.mkShell {
           RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
           nativeBuildInputs = with pkgs; [
-            rustup
             rustc
             cargo
             rustfmt
