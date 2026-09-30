@@ -8,9 +8,8 @@
   homebrew = {
     enable = true;
     global.brewfile = true;
+    # nix-darwin passes --zap --force-cleanup, which needs Homebrew 5+.
     onActivation.cleanup = "zap";
-    # Homebrew 5 requires --force-cleanup alongside --cleanup --zap.
-    onActivation.extraFlags = [ "--force-cleanup" ];
 
     brews = [
       "protobuf"
