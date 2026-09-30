@@ -1,4 +1,7 @@
 # GUI apps and a few CLIs that are better served by Homebrew than by nixpkgs.
+# This is the base set every Mac gets, and all the office Mac (macbook-pro)
+# gets. Personal extras are added in configurations/darwin/macbook-air.nix;
+# the lists merge. `zap` uninstalls any cask a host doesn't list, data and all.
 { config, lib, ... }:
 
 {
@@ -13,13 +16,10 @@
       "protobuf"
       "kcat"
       "bitwarden-cli"
-      # Tailscale CLI + tailscaled. The formula (not the App Store app) because
-      # Headscale needs a custom --login-server. Enroll with:
-      #   sudo tailscaled install-system-daemon
-      #   sudo tailscale up --login-server https://headscale.budhilaw.com
-      "tailscale"
     ];
 
+    # WhatsApp and Bitwarden are pinned in the dock (system-defaults.nix);
+    # Passepartout holds the Amartha OpenVPN profiles.
     masApps = {
       "Passepartout" = 1433648537;
       "WhatsApp Messenger" = 310633997;
@@ -38,25 +38,10 @@
       "vorssaint"
       "thaw@beta"
       "shottr"
-      "protonvpn"
-      # "qbittorrent"
-      "the-unarchiver"
-      "cap"
 
       # chat
-      "discord"
-      "telegram"
       "slack"
       "zoom"
-
-      # media
-      "iina"
-      "moonlight"
-      "mounty"
-      "obs"
-
-      # android
-      "android-file-transfer"
 
       # developer tools
       "jetbrains-toolbox"

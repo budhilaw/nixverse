@@ -28,6 +28,38 @@
     LC_ALL = "en_US.UTF-8";
   };
 
+  # Personal apps, on top of the base set in modules/darwin/homebrew.nix.
+  homebrew = {
+    brews = [
+      # Tailscale CLI + tailscaled. The formula (not the App Store app) because
+      # Headscale needs a custom --login-server. Enroll with:
+      #   sudo tailscaled install-system-daemon
+      #   sudo tailscale up --login-server https://headscale.budhilaw.com
+      "tailscale"
+    ];
+
+    casks = [
+      # productivity
+      "protonvpn"
+      # "qbittorrent"
+      "the-unarchiver"
+      "cap"
+
+      # chat
+      "discord"
+      "telegram"
+
+      # media
+      "iina"
+      "moonlight"
+      "mounty"
+      "obs"
+
+      # android
+      "android-file-transfer"
+    ];
+  };
+
   # Secrets only this machine carries.
   home-manager.users.budhilaw = {
     within.host = "macbook-air";

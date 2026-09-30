@@ -23,8 +23,8 @@ nix/default.nix                 flake-parts + ez-configs wiring, shared nixpkgs 
 nix/overlays.nix                pkgs.stable (nixpkgs release branch)
 nix/dev-shells.nix              nix develop ~/.config/nixverse#<name>
 nix/configurations/
-  darwin/macbook-air.nix        personal Mac: identity, secrets it carries, iTerm2 profile
-  darwin/macbook-pro.nix        office Mac: work key only
+  darwin/macbook-air.nix        personal Mac: identity, secrets, personal apps, iTerm2 profile
+  darwin/macbook-pro.nix        office Mac: work key and base apps only
   nixos/homelab-lenovo/         server: hardware, disko, services, containers
   home/budhilaw.nix             shared home profile (ssh aliases, public keys)
 nix/modules/
@@ -90,7 +90,7 @@ mkdir -p ~/.config/sops/age && $EDITOR ~/.config/sops/age/keys.txt && chmod 600 
 git clone git@github.com:budhilaw/nixverse.git ~/.config/nixverse
 cd ~/.config/nixverse
 sudo nix run nix-darwin/nix-darwin/master#darwin-rebuild -- switch --flake .#macbook-pro
-# 4. tailnet (Homebrew formula, not the App Store app, so it can use Headscale)
+# 4. Air only: tailnet (Homebrew formula, not the App Store app, so it can use Headscale)
 sudo tailscaled install-system-daemon
 sudo tailscale up --login-server https://headscale.budhilaw.com
 ```

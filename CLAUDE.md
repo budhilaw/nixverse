@@ -38,6 +38,9 @@ here; use the form above.
   true for one machine only: hostname, which secrets it carries, per-host
   home-manager overrides via `home-manager.users.budhilaw`.
 - `nix/configurations/home/budhilaw.nix` is the shared home profile.
+- Homebrew: `modules/darwin/homebrew.nix` is the base set (all the office
+  Mac gets); personal apps go in `macbook-air.nix`. Cleanup is `zap`, so a
+  cask dropped from a host's lists is uninstalled there with its data.
 - Custom options live under `within.*` (`within.gpg`, `within.ssh`,
   `within.dev.enable`, `within.host`). Add new ones there, not at top level.
 - `pkgs.stable` is the release branch overlay; use it for toolchains that

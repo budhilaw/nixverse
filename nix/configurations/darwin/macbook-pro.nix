@@ -1,5 +1,5 @@
-# MacBook Pro M2 — the office machine. Same profile as the Air; carries only
-# the work (Amartha) keys.
+# MacBook Pro M2 — the office machine. Same profile as the Air, but carries
+# only the work (Amartha) keys and only the base Homebrew set.
 {
   inputs,
   lib,
