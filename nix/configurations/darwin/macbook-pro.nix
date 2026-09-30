@@ -13,6 +13,11 @@
   networking.hostName = "macbook-pro";
   networking.computerName = "macbook-pro";
 
+  # uid 501 on this Mac is IT's `admin` account and 502 was the old
+  # ericssonbudhilaw account, so budhilaw was created third. If `id -u` says
+  # otherwise, activation warns "unexpected uid" and skips the user: fix it here.
+  users.users.budhilaw.uid = 503;
+
   system.stateVersion = 4;
   nixpkgs.hostPlatform = "aarch64-darwin";
 

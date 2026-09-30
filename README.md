@@ -83,6 +83,7 @@ Adding a machine that needs secrets: derive its recipient
 ## New Mac
 
 ```sh
+# 0. log in as `budhilaw`: uid 501, or 503 on the office Mac (see macbook-pro.nix)
 # 1. Determinate Nix: https://dtr.mn/determinate-nix
 # 2. age key from 1Password
 mkdir -p ~/.config/sops/age && $EDITOR ~/.config/sops/age/keys.txt && chmod 600 ~/.config/sops/age/keys.txt
